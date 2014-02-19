@@ -30,8 +30,8 @@ flyingcreature.txt
 ```
 
 ```
-Startindex: 6  (*The top left cell of 5 in map.txt*)
-Goalindex: 23  (*The bottom right cell of 5 in map.txt*)
+Startindex: (1,1)
+Goalindex: (3,4)  (*x-coord 3, y-coord 4 counting from top left starting at 0*)
 ```
 
 PROCESS
