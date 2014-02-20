@@ -1,4 +1,4 @@
-PolyML.print_depth 100;
+(*PolyML.print_depth 100*)
 
 fun readLines s =
 	case TextIO.inputLine s of
@@ -31,7 +31,8 @@ val walkable = readWalkable "walk.txt";
 val grid' = preprocess (grid, walkable);
 
 (* bool list list -> nodetree *)
-fun makeNodeTree () = raise Fail "bar";
+fun makeNodeTree ( grid ) = 
+	raise Fail "Not implemented";
 
 (* nodetree -> node *)
 fun getNode () = raise Fail "qux";
@@ -41,3 +42,13 @@ fun makePathFinder () = raise Fail "a";
 
 (* (int * int) * (int * int) -> (int * int) list *)
 fun findPath (start, goal) = raise Fail "baz";
+
+datatype state = WHITE | GREY | BLACK
+datatype node = Node of (int*int)*node ref list*state
+
+val node1 = Node((50,23),[],WHITE);
+(*From node2 you can travel to node1*)
+val node2 = Node((1,10),[ ref node1 ], WHITE);
+
+fun getLinkedNodes( Node( (x,y), l::ls, color ) ) =
+	!l::getLinkedNodes( Node( (x,y), ls, color ))
