@@ -40,4 +40,4 @@ val walkable = readWalkable "walk.txt";
 fun preprocess (grid, walkable) =
 	Array2.fromList(List.map (fn row => List.map (fn cell => contains(walkable, cell)) row) grid);
 
-preprocess(grid, walkable);
+val grid' = preprocess(grid, walkable);
