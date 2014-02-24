@@ -1,0 +1,18 @@
+2014-02-19
+	15:30 - 17:00
+		Brainstorma om ideer till projektet i grupprum på Ångströms.
+	17:30 - 21:30
+		Koda SML i labbsalen. Initial version av input hantering samt preprocess.
+		Nästa steg blir att titta närmare på nodestrukturen för vår implementation
+		av pathfinding.
+
+2014-02-20
+	14:00 - 18:00
+		Programmering i FooBar. Läser huvudsakligen upp om graph algoritmer.
+
+2014-02-24
+	14:45 - xx:xx
+		Möte med Peter. Vi fick klarhet i att arrayer får användas så länge som vi
+		gömmer undan dem bakom en abstyp.
+
+		Grov API design i alpha.txt
