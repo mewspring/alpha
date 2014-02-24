@@ -1,8 +1,4 @@
-(*PolyML.print_depth 100*)
-Control.Print.printDepth := 100; Control.Print.linewidth := 150;(*SML/NJ*)
-
-datatype state = WHITE | GREY | BLACK
-datatype node = Node of (int*int) * (int*int) list * state
+PolyML.print_depth 100;
 
 fun readLines s =
 	case TextIO.inputLine s of
@@ -26,38 +22,16 @@ fun readWalkable path =
 fun contains (l, x) =
 	List.exists (fn y => y = x) l;
 
-(* int list list * int list -> node option list list *)
+(* int list list * int list -> bool list list *)
 fun preprocess (grid, walkable) =
-	let
-		fun preprocessCell( [], _, _ ) = []
-		|	preprocessCell( cell::cells, x , y ) =
-			if contains (walkable, cell) then 
-				SOME( Node( (x,y), [], WHITE))::preprocessCell( cells, x+1, y)
-			else
-				NONE::preprocessCell( cells, x+1, y)
-		fun preprocessRow( [], _ ) = []
-		|	preprocessRow( row::rows, y ) =
-			preprocessCell( row, 0, y )::preprocessRow( rows, y+1)
-			
-	in
-		preprocessRow(grid, 0)
-	end
-	
-(*Complex test*)
-(*
+	Array2.fromList (List.map (fn l => (List.map (fn x => contains (walkable, x)) l)) grid);
+
 val grid = readGrid ("floor.txt", "objects.txt");
 val walkable = readWalkable "walk.txt";
 val grid' = preprocess (grid, walkable);
-*)
 
-(*simple test*)
-val grid = [
-			[0,1,0,0],
-			[0,0,1,1],
-			[1,0,0,0]
-			];
-val walkable = [0];
-val grid' = preprocess (grid, walkable);
+(* bool list list -> nodetree *)
+fun makeNodeTree () = raise Fail "bar";
 
 (* nodetree -> node *)
 fun getNode () = raise Fail "qux";
@@ -68,34 +42,5 @@ fun makePathFinder () = raise Fail "a";
 (* (int * int) * (int * int) -> (int * int) list *)
 fun findPath (start, goal) = raise Fail "baz";
 
-(* bool list list -> nodetree *)
-fun linkNodes ( grid ) = 
-	let
-		fun link( SOME(Node((x,y), links, state)), SOME(Node((x2,y2), _, _)) ) = SOME(Node((x,y), (x2,y2)::links, state))
-		|	link( x, y ) = x
 
-		fun iterCells( [], _ ) = []
-		|	iterCells( x, [] ) = x
-		|	iterCells( curSource::sources, curTarget::targets ) = 
-				link(curSource,curTarget)::iterCells( sources, targets )
 
-		fun iterCells'( x::xs, ys ) =
-				iterCells( iterCells( x::iterCells(xs, ys), ys ), List.drop( ys, 1) )
-
-		fun iterCells''( x::xs ) =
-			let
-				val (hd::tail) = iterCells( x::xs, xs )
-			in
-				hd::iterCells( tail, x::xs)
-			end
-
-		fun iterRows( [] ) = []
-		|	iterRows( curRow::[] ) =
-				[iterCells''(curRow)]
-		|	iterRows( curRow::nextRow::rows ) =
-				iterCells''(iterCells'( curRow, nextRow ))::iterRows( iterCells'( nextRow, curRow )::rows )
-	in
-		iterRows( grid )
-	end
-
-val nodeTree = linkNodes( grid' )
