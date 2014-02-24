@@ -18,8 +18,7 @@ datatype node = Node of (int * int) * (int * int) list * (Color ref)
 abstype graph = Graph of node option Array2.array 
 with
 
-	fun at(NONE, _) = raise Fail "NOPE!"
-	|	at(SOME g, (x, y))  = Array2.sub(g, x,y)  
+	fun at(Graph g, (x, y))  = Array2.sub(g, x,y)  
 
 	fun new mb2 = 
 		let
