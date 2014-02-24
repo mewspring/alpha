@@ -1,0 +1,31 @@
+preprocess(m int list list, walkable int list) bool array2
+
+--------------------------------------------------------------------------------
+
+=== [ Graph ] ===
+
+datatype Color = White | Gray | Black;
+
+(*
+	Node struct {
+		(x, y)
+		// List of adjacent nodes.
+		(x, y) list
+		ref Color
+	}
+*)
+datatype node = Node of (int * int) * (int * int) list * ref Color;
+
+abstype graph = Node option Array2;
+
+at(x, y) Node option
+
+new(m bool array2)
+
+    000
+    0x1
+    001
+
+=== [ Pathfinder ] ===
+
+path = find(g Graph, start, goal) (x, y) list option
