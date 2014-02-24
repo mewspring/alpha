@@ -50,3 +50,14 @@ fun getIntList s =
 	in
 		List.mapPartial getInt (split (s, #","))
 	end;
+
+(*
+	contains (l, x)
+	TYPE: 'a list * 'a -> bool
+	PRE: true
+	POST: true if the list l contains x and false otherwise.
+	EXAMPLE: contains ([1,2,3], 3) = true
+	         contains ([1,2,3], 4) = false
+*)
+fun contains (l, x) =
+	List.exists (fn v => v = x) l;
