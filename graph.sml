@@ -28,6 +28,7 @@ fun canWalk (grid, x, y) =
 	PRE:
 	POST:
 *)
+(* TODO: prevent walks through diagonal walls. *)
 fun getAdjacent (grid, x, y) =
 	let
 		(*
