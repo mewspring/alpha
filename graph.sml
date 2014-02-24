@@ -42,7 +42,7 @@ fun getAdjacent (grid, x, y) =
 			else
 				NONE
 	in
-		(List.map valOf o List.filter isSome) (getWalk(x-1, y-1)::getWalk(x, y-1)::getWalk(x+1, y-1)::getWalk(x-1, y)::getWalk(x, y)::getWalk(x+1, y)::getWalk(x-1, y+1)::getWalk(x, y+1)::getWalk(x+1, y+1)::[])
+		List.mapPartial getWalk [(x-1, y-1), (x, y-1), (x+1, y-1), (x-1, y), (x+1, y), (x-1, y+1), (x, y+1), (x+1, y+1)]
 	end;
 
 (*
@@ -57,6 +57,8 @@ fun getNode (grid, x, y) =
 	else
 		NONE;
 
+abstype graph = Graph of node option Array2.array
+with
 (*
 	makeGrid grid
 	TYPE: bool Array2.array -> node option Array2.array
@@ -70,7 +72,8 @@ fun makeGraph grid =
 		val range = {base = graph, row = 0, col = 0, nrows = NONE, ncols = NONE}
 		val _ = Array2.modifyi Array2.RowMajor f range
 	in
-		graph
+		Graph graph
 	end;
+end;
 
 val graph = makeGraph(grid');
