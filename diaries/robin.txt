@@ -16,3 +16,5 @@
 		gömmer undan dem bakom en abstyp.
 
 		Grov API design i alpha.txt
+
+		Arbeta med preprocess och hjälperfunktioner.
