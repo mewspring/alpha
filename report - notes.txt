@@ -1,0 +1,25 @@
+=== [ Inadmissible heuristics ] ================================================
+
+	* Heuristics using Manhattan distance.
+		- If the pathfinding algorithm overestimates the distance H it may fail to
+		  find the shortest path. For these cases we call the heuristics
+		  inadmissible.
+
+ref: http://www.policyalmanac.org/games/aStarTutorial.htm
+
+=== [ Treatment of ties ] ======================================================
+
+	When two nodes have the same F score one must be chosen over the other. This
+	choise will not affect the length of the path, but it may affect the path
+	itself. Another way to put this is that depending on how ties are treated two
+	different implementations of the A* algorithm may find different paths of
+	equal length.
+
+ref: http://www.policyalmanac.org/games/aStarTutorial.htm
+
+=== [ Cutting corners ] ========================================================
+
+	The pathfinding algorithm can either allow or forbit diagonal steps to cut
+	corners. Obviously this decision may affect the shortest path.
+
+ref: http://www.policyalmanac.org/games/aStarTutorial.htm
