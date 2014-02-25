@@ -1,14 +1,19 @@
-19/2 4h
+19/2 15:30 - 19:00
 Startup meeting. Brainstorming project ideas. Picking most interesting topic that also seems suitable for a functional language. Dicided upon path finding. Discussed some ideas for how it should be implemeted, what the software should do and not do. Created git repo and readme with the rough plan for our project
 
 
 
-20/2 2h
+20/2 14:00 - 16:00
 Looked at what the other members had coded the previous day to get up to date. Created datatype for our grid node using references. Even though we're not allowed to use them we want to elaborate with it to get experience with using it as well as a functional datatype (Babak is looking into that).
 
-23/2 3h
+23/2 17:00 - 20:00
 Trying to figure out a good algorithm for createing a node-graph from our grid where each node contains the coordinates to the nodes that it connects to. But without luck
 
-24/2 4h
+24/2 10:00 - 13:00
 Came up with an algorithm that works to build the node-graph. It should be fairly efficient but the code isn't very clean. At least we can start working on the actual path-finding now
+
+14:45 - 22:30
+Meeting with Peter. Got the go ahead on the project but also to use arrays for building and storing the node-graph. Each one of us re-wrote preprocess and the nodegraph-creation functions to use arrays instead of lists, which made the code alot more readable and will be faster when we do the path finding. Started reading up on A* algorithm.
+
+25/2 11:30 - 
 
