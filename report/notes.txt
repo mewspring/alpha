@@ -5,6 +5,31 @@
 		  find the shortest path. For these cases we call the heuristics
 		  inadmissible.
 
+	* Hybrid heuristics (possible solution)
+		- Instead of using pure Manhattan distance for the H cost we could use a
+		  hybrid between the Manhattan distance and "as the crow flies".
+
+		  Example: Let 's' and 'g' represent the start and goal locations
+		  respectively. Let the cost of a horizontal or vertical step be 10 and
+		  the cost of a diagonal step be 14 (floor(10*sqrt(2)).
+
+		+-------+
+		|     g |
+		| s     |
+		+-------+
+
+		  The cost using Manhattan distance between 's' and 'g' is 1*10 + 4*10 =
+		  50, since there is one vertical and four horizontal steps from 's' to
+		  'g'.
+
+		  Using a hybrid heuristic we could combine a horizontal and a vertical
+		  step into a diagonal step which would cost 14 instead of 10+10=20. Using
+		  this method the heuristic could no longer be inadmissible.
+
+		  The cost using a hybrid heuristic would in this case be 1*14 + 3*10 =
+		  44, since there is one diagonal and three horizontal steps from 's' to
+		  'g'.
+
 ref: http://www.policyalmanac.org/games/aStarTutorial.htm
 
 === [ Treatment of ties ] ======================================================
