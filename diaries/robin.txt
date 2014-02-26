@@ -11,10 +11,15 @@
 		Programmering i FooBar. Läser huvudsakligen upp om graph algoritmer.
 
 2014-02-24
-	14:45 - xx:xx
+	14:45 - 22:00
 		Möte med Peter. Vi fick klarhet i att arrayer får användas så länge som vi
 		gömmer undan dem bakom en abstyp.
 
 		Grov API design i alpha.txt
 
 		Arbeta med preprocess och hjälperfunktioner.
+
+2014-02-25
+	12:00 - xx:xx
+		Programmering hemma hos Nils. Läs upp om A* algoritmen. Skriv lite notes
+		till rapporten.
