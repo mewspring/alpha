@@ -20,6 +20,10 @@
 		Arbeta med preprocess och hjälperfunktioner.
 
 2014-02-25
-	12:00 - xx:xx
+	12:00 - 21:00
 		Programmering hemma hos Nils. Läs upp om A* algoritmen. Skriv lite notes
 		till rapporten.
+
+2014-02-26
+	20:00 - 23:00
+		Rapportskrivande hemma samt research.

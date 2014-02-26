@@ -1,0 +1,145 @@
+\documentclass[12pt, a4paper]{article}
+
+% Preamble
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fullpage}
+\usepackage[parfill]{parskip}
+
+\usepackage[hidelinks]{hyperref}
+\bibliographystyle{ieeetr}
+\usepackage{courier}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+
+\title{Pathfinding, PKD 2014}
+\author{Babak Mohebbolhoggeh, Nils Lerin and Robin Eklind}
+
+% Document
+
+\begin{document}
+
+\maketitle
+
+\pagebreak
+
+\tableofcontents
+
+\pagebreak
+
+% === [ Introduction ] =========================================================
+
+\section{Introduction}
+
+Pathfinding is the act of locating a path from point A to point B. A common
+special case of pathfinding is concerned with locating the shortest possible
+path between two points. Pathfinding has many applications and while some are
+obvious, such as map directions, others are less apparent. For instance some
+network protocols use pathfinding to locate efficient routes for network
+traffic.
+
+% --- [ Purpose ] --------------------------------------------------------------
+
+\subsection{Purpose}
+
+Our goal with this project is to research various pathfinding algorithms and
+implement the A* algorithm, which has become the de facto algorithm in game
+development \cite{astar1, defacto}.
+
+% === [ Pathfinding ] ==========================================================
+
+\section{Pathfinding}
+
+% === [ Design ] ===============================================================
+
+\section{Design}
+
+% === [ Algorithms ] ===========================================================
+
+\section{Algorithms}
+
+% --- [ Dijkstra ] -------------------------------------------------------------
+
+\subsection{Dijkstra}
+
+% --- [ A* ] -------------------------------------------------------------------
+
+\subsection{A*}
+
+% ~~~ [ Inadmissible heuristics ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+\subsubsection{Inadmissible heuristics}
+
+\textit{Heuristics using Manhattan distance}
+
+If the pathfinding algorithm overestimates the distance H it may fail to find
+the shortest path. For these cases we call the heuristics inadmissible.
+\cite{astar2}
+
+\textit{Hybrid heuristics (possible solution)}
+
+Instead of using pure Manhattan distance for the H cost we could use a hybrid
+between the Manhattan distance and ''as the crow flies''.
+
+\textit{Example:} Let 's' and 'g' represent the start and goal locations
+respectively. Let the cost of a horizontal or vertical step be 10 and the cost
+of a diagonal step be 14 ($ \floor{10 \sqrt{2}} $).
+
+\texttt{+-------+ \\
+|.....g.| \\
+|.s.....| \\
++-------+}
+
+The cost using Manhattan distance between 's' and 'g' is $ 1*10 + 4*10 = 50 $,
+since there is one vertical and four horizontal steps from 's' to 'g'.
+
+Using a hybrid heuristic we could combine a horizontal and a vertical step into
+a diagonal step which would cost 14 instead of 10+10=20. Using this method the
+heuristic could no longer be inadmissible.
+
+The cost using a hybrid heuristic would in this case be $ 1*14 + 3*10 = 44 $,
+since there is one diagonal and three horizontal steps from 's' to 'g'.
+
+% ~~~ [ Treatment of ties ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+\subsubsection{Treatment of ties}
+
+When two nodes have the same F score one must be chosen over the other. This
+choise will not affect the length of the path, but it may affect the path
+itself. Another way to put this is that depending on how ties are treated two
+different implementations of the A* algorithm may find different paths of equal
+length. \cite{astar2}
+
+% ~~~ [ Cutting corners ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+\subsubsection{Cutting corners}
+
+The pathfinding algorithm can either allow or forbit diagonal steps to cut
+corners. Obviously this decision may affect the shortest path. \cite{astar2}
+
+% === [ Design choices ] =======================================================
+
+\section{Design choices}
+
+% === [ Implementation ] =======================================================
+
+\section{Implementation}
+
+% === [ User's Manual ] ========================================================
+
+\section{User's Manual}
+
+% TODO: Use cases, examples...
+
+% === [ Analysis and discussion ] ==============================================
+
+\section{Analysis and discussion}
+
+\pagebreak
+
+\bibliography{references}
+
+\end{document}
