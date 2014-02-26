@@ -15,5 +15,9 @@ Came up with an algorithm that works to build the node-graph. It should be fairl
 14:45 - 22:30
 Meeting with Peter. Got the go ahead on the project but also to use arrays for building and storing the node-graph. Each one of us re-wrote preprocess and the nodegraph-creation functions to use arrays instead of lists, which made the code alot more readable and will be faster when we do the path finding. Started reading up on A* algorithm.
 
-25/2 11:30 - 
+25/2 11:30 - 21:00
+More research on A* and the different options for priority queues. Found that binary heap seems to be the most common method when using arrays but binomial tree for the lecture should also work.
+
+26/2 11:00 - 16:00
+For binomial tree to work with a* we need a method to update the priority of an item in the queue and bubble it up the heap if it gets a lower priority than its parent. Wrote this method today.
 
