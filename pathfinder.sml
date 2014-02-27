@@ -1,5 +1,5 @@
 use "graph.sml";
-structure Pathfinder = 
+structure Pathfinder =
 struct
 	datatype Color = White | Gray | Black
 	fun aStar ( grid', start as (sx,sy) : (int * int), goal as (ex, ey))  =
@@ -47,4 +47,46 @@ struct
 			(pathfind' openList; rev (rewind goal))
 		end
 	fun aStarGrid( grid ) = Graph.makeGraph(grid, (White, 0,0,(0,0)))
+
+
+	fun dijkstra ( grid, start as (sx,sy) : (int * int), goal as (ex, ey)) =
+	let
+		val openList = [start] (*should be a queue*)
+		val _ = case Graph.at(grid, sx, sy) of (SOME (Graph.Node(_, adjList, _))) => Graph.update(grid, sx, sy, SOME (Graph.Node((start, adjList, 1))))
+
+
+		fun dijkstra' [] = raise Fail "Path not found"
+		|	dijkstra'((currentNode as (x,y))::openList) =
+			let
+				val value = case Graph.at(grid, x, y) of (SOME (Graph.Node(_, _, value))) => value
+
+				fun doStuff((adjX, adjY), openList) =
+					let
+						val (adjV, adjAL) = case Graph.at(grid, adjX, adjY) of (SOME (Graph.Node(_, adjAL, value))) => (value, adjAL)
+					in
+						if adjV = 0 then
+							(Graph.update(grid, adjX, adjY, (SOME (Graph.Node((adjX, adjY), adjAL, value+1)))); openList@[(adjX, adjY)])
+						else
+							openList
+					end
+
+				val adjList = case Graph.at(grid, x, y) of (SOME (Graph.Node(_, adjList, _))) => adjList
+			in
+				if currentNode = goal then openList else
+				dijkstra' (foldr doStuff openList adjList)
+			end
+
+		fun rewind (pos as (x,y)) =
+			let
+				val (value, adjList) = case Graph.at(grid, x, y) of (SOME (Graph.Node(_, adjList, value))) => (value, adjList)
+
+				fun findNextPos((adjX, adjY)::adjList) = case Graph.at(grid, adjX, adjY) of (SOME (Graph.Node(_, _, adjV))) => if adjV = (value-1) then (adjX, adjY) else findNextPos(adjList)
+			in
+				if value = 1 then [] else pos::rewind( findNextPos(adjList) )
+			end
+
+	in
+		(dijkstra'(openList); rev (rewind goal))
+	end
+
 end
