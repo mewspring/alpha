@@ -43,7 +43,7 @@ struct
 					pathfind' (foldr(fn ((adjX,adjY), xs) => case doStuff(adjX, adjY) of
 						(0) => xs
 						| (1) => Pqueue.insert(xs, getF(adjX,adjY), (adjX,adjY))
-						| (2) => (print ("("^(Int.toString adjX)^","^(Int.toString adjY)^")\n"); Pqueue.update(xs, getF(adjX,adjY), (adjX,adjY)))
+						| (2) => Pqueue.update(xs, getF(adjX,adjY), (adjX,adjY))
 						 ) openList adjList)
 				end
 

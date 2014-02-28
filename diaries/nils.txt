@@ -21,3 +21,8 @@ More research on A* and the different options for priority queues. Found that bi
 26/2 11:00 - 16:00
 For binomial tree to work with a* we need a method to update the priority of an item in the queue and bubble it up the heap if it gets a lower priority than its parent. Wrote this method today.
 
+27/2 14:30 - 16:30
+Restructuring of code
+
+18:00 - 23:45
+Implemented pqueue qith Babaks a*, spent a lot of time fighting with a bug which didn't give the shortest route. Eventually found out what was causing it.
