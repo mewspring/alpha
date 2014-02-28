@@ -1,6 +1,6 @@
 use "graph.sml";
 use "pqueue.sml";
-structure Pathfinder = 
+structure Pathfinder =
 struct
 	datatype Color = White | Gray | Black
 	fun aStar ( grid', start as (sx,sy) : (int * int), goal as (ex, ey))  =
@@ -23,15 +23,15 @@ struct
 						let
 							val (xy, adjl, adjC,adjG,adjH,adjParent) = case Graph.at(grid, adjX, adjY) of (SOME (Graph.Node(xy, adjl, (c,g,h, parent )))) => (xy, adjl, c,g,h,parent)
 						in
-							if adjC = Black then 
+							if adjC = Black then
 								0
-							else if adjC = White then 
+							else if adjC = White then
 								(Graph.update(grid, adjX, adjY, (SOME (Graph.Node(xy, adjl, (Gray,calculateG(currentNode, (adjX, adjY)),calculateH(adjX, adjY), currentNode ))))); 1)
 							else (*Gray*)
 								let
 									val newG = calculateG(currentNode, (adjX, adjY))
 								in
-									if newG >= adjG then 
+									if newG >= adjG then
 										0
 									else (Graph.update(grid, adjX, adjY, (SOME (Graph.Node(xy, adjl, (Gray,newG,adjH, currentNode ))))); 2)
 								end
@@ -40,8 +40,8 @@ struct
 					val (_, adjList) = case Graph.at(grid, x, y) of (SOME (Graph.Node(tXY, tadjList, (_, g, h, parent)))) => (Graph.update(grid, x, y, (SOME (Graph.Node(tXY, tadjList, (Black, g, h, parent))))),tadjList)
 				in
 					if currentNode = goal then () else
-					pathfind' (foldr(fn ((adjX,adjY), xs) => case doStuff(adjX, adjY) of 
-						(0) => xs 
+					pathfind' (foldr(fn ((adjX,adjY), xs) => case doStuff(adjX, adjY) of
+						(0) => xs
 						| (1) => Pqueue.insert(xs, getF(adjX,adjY), (adjX,adjY))
 						| (2) => (print ("("^(Int.toString adjX)^","^(Int.toString adjY)^")\n"); Pqueue.update(xs, getF(adjX,adjY), (adjX,adjY)))
 						 ) openList adjList)
@@ -55,8 +55,11 @@ struct
 				end
 		in
 			(pathfind' openList; rev (rewind goal))
-		end
-	fun aStarGrid( grid ) = Graph.makeGraph(grid, (White, 0,0,(0,0)))
+		end;
+
+	fun aStarGrid( grid ) = Graph.makeGraph(grid, (White, 0,0,(0,0)));
+
+	fun dijkstraGrid( grid ) = Graph.makeGraph(grid, 0);
 
 
 	fun dijkstra ( grid, start as (sx,sy) : (int * int), goal as (ex, ey)) =
