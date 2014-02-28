@@ -31,3 +31,8 @@
 2014-02-27
 	23:00 - 02:00
 		Rapportskrivande samt implementation av pretty printing och demo.
+
+2014-02-28
+	14:00 - 16:45
+		Träffas hemma hos mig och gå igenom koden samt gå igenom vad som behöver
+		göras. Ref repo issues.

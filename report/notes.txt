@@ -1,0 +1,5 @@
+Improvements.
+
+* Använd en vector istället för en tvådimensionell array för grafen.
+  På så sätt är koden mindre knyten till 2d och skulle lättare kunna
+  användas för pathfinding i 3d (x, y, z).
