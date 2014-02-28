@@ -1,6 +1,6 @@
 structure Graph =
 	struct
-	
+
 	(*
 		isValid (grid, x, y)
 		TYPE: bool Array2.array * int * int -> bool
@@ -89,4 +89,4 @@ structure Graph =
 			Graph graph
 		end;
 	end;
-end
+end;
