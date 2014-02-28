@@ -1,4 +1,4 @@
-structure Helpers = 
+structure Helpers =
 	struct
 	(*
 		readLines path
@@ -99,4 +99,5 @@ structure Helpers =
 	*)
 	fun preprocess (grid, walkable) =
 		Array2.fromList(List.map (fn row => List.map (fn cell => contains(walkable, cell)) row) grid);
+
 end

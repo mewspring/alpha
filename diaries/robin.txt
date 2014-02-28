@@ -29,5 +29,5 @@
 		Rapportskrivande hemma samt research.
 
 2014-02-27
-	23:00 - 01:30
-		Rapportskrivande samt implementation av pretty printing.
+	23:00 - 02:00
+		Rapportskrivande samt implementation av pretty printing och demo.
