@@ -1,6 +1,6 @@
 use "grid.sml";
-use "pathfinder.sml";
 use "pretty.sml";
+use "pathfinder.sml";
 
 val grid = Grid.make ("demo/floor.txt", "demo/objects.txt", "demo/walk.txt");
 
@@ -12,7 +12,7 @@ val start = (2, 3);
 val goal = (12, 2);
 val shortestPath = Pathfinder.aStar(graph, start, goal);
 
-Pretty.printPath(grid, start, goal, shortestPath);
+Pretty.printPath(Grid.toArray2 grid, start, goal, shortestPath);
 
 print("=== [ Example 2 - Dijkstra ] ====");
 
@@ -22,4 +22,4 @@ val start = (2, 3);
 val goal = (12, 2);
 val shortestPath = Pathfinder.dijkstra(graph, start, goal);
 
-Pretty.printPath(grid, start, goal, shortestPath);
+Pretty.printPath(Grid.toArray2 grid, start, goal, shortestPath);
