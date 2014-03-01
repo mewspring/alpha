@@ -1,14 +1,16 @@
 use "helpers.sml";
+use "grid.sml";
 
 structure Pretty =
 struct
 
 	fun printGrid grid =
 		let
-			val region = {base=grid, row=0, col=0, nrows=NONE, ncols=NONE}
+			val grid' = Grid.toArray2 grid
+			val region = {base=grid', row=0, col=0, nrows=NONE, ncols=NONE}
 			fun f (x, y, a) =
 				(if a then print(".") else print("#");
-				if y = Array2.nCols(grid)-1 then print("\n") else ())
+				if y = Grid.width grid - 1 then print("\n") else ())
 		in
 			Array2.appi Array2.RowMajor f region
 		end;
