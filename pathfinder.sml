@@ -6,12 +6,12 @@ struct
 	fun aStar ( grid', start as (sx,sy) : (int * int), goal as (ex, ey))  =
 		let
 			val grid = Graph.copy(grid');
-			val openList = Pqueue.insert( Pqueue.empty, 0,start );
+			val openList = BinoHeap.insert( BinoHeap.empty, 0,start );
 			fun getParent(x,y) = case Graph.at(grid, x, y) of (SOME (Graph.Node(_, _, (_,_,_, parent )))) => parent
 			fun pathfind'  ([]) = raise Fail "Path not found"
 			|	pathfind' ( openList ) =
 				let
-					val ((currentF, (currentNode as (x,y))), openList ) = Pqueue.extractMin( openList );
+					val ((currentF, (currentNode as (x,y))), openList ) = BinoHeap.extractMin( openList );
 					fun calculateG ((x, y), (adjX, adjY)) = case (Graph.at(grid, x, y)) of (SOME (Graph.Node(_, _, (_, g, _, _)))) => if (Int.abs(x - adjX) + Int.abs(y - adjY)) = 2 then g+14 else g+10
 					fun calculateH(x,y) = 10*(Int.abs(x - ex) + Int.abs(y - ey))
 
@@ -42,8 +42,8 @@ struct
 					if currentNode = goal then () else
 					pathfind' (foldr(fn ((adjX,adjY), xs) => case doStuff(adjX, adjY) of
 						(0) => xs
-						| (1) => Pqueue.insert(xs, getF(adjX,adjY), (adjX,adjY))
-						| (2) => Pqueue.update(xs, getF(adjX,adjY), (adjX,adjY))
+						| (1) => BinoHeap.insert(xs, getF(adjX,adjY), (adjX,adjY))
+						| (2) => BinoHeap.update(xs, getF(adjX,adjY), (adjX,adjY))
 						 ) openList adjList)
 				end
 
