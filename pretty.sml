@@ -18,7 +18,7 @@ struct
 	fun printPath (grid, start, goal, path) =
 		let
 			val region = {base=grid, row=0, col=0, nrows=NONE, ncols=NONE}
-			fun f (x, y, a) =
+			fun f (y, x, a) =
 				(if (x, y) = start then
 					print("S")
 				else if (x, y) = goal then
@@ -29,7 +29,7 @@ struct
 					print(".")
 				else
 					print("#");
-				if y = Array2.nCols(grid)-1 then
+				if x = Array2.nCols(grid)-1 then
 					print("\n")
 				else
 					())
