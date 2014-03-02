@@ -1,5 +1,6 @@
 use "graph.sml";
 use "pqueue.sml";
+use "queue.sml";
 
 structure Pathfinder =
 struct
@@ -17,8 +18,6 @@ struct
 					fun calculateH(x,y) = 10*(Int.abs(x - ex) + Int.abs(y - ey))
 
 					fun getF(adjX, adjY) = case (Graph.at grid) (adjX, adjY) of (SOME (Graph.Node(_, _, (_,g,h, _ )))) => g+h
-
-					fun hasBestG((currentX, currentY), (adjX, adjY)) = case ((Graph.at grid) (currentX, currentY), (Graph.at grid) (adjX, adjY)) of ((SOME (Graph.Node(_, _, (_, g, _, _)))), (SOME (Graph.Node(_, _, (_, adjG, _, _))))) => g <= adjG
 
 					fun doStuff (adjX, adjY) =
 						let
@@ -60,25 +59,29 @@ struct
 
 	fun aStarGraph grid = Graph.make(grid, (White, 0,0,(0,0)));
 
-	fun dijkstraGraph grid = Graph.make(grid, 0);
+	fun dijkstraGraph grid = Graph.make(grid, NONE : int option);
 
-	fun dijkstra ( grid, start as (sx,sy) : (int * int), goal as (ex, ey)) =
+	fun dijkstra ( grid', start as (sx,sy) : (int * int), goal as (ex, ey)) =
 	let
-		val openList = [start] (*should be a queue*)
-		val _ = case (Graph.at grid) (sx, sy) of (SOME (Graph.Node(_, adjList, _))) => (Graph.update grid) ((sx, sy), SOME (Graph.Node((start, adjList, 1))))
+		val grid = Graph.copy(grid');
+		val openList = Queue.enqueue (Queue.empty, start)
+		val _ = case (Graph.at grid) (sx, sy) of (SOME (Graph.Node(_, adjList, _))) => (Graph.update grid) ((sx, sy), SOME (Graph.Node((start, adjList, SOME 0))))
 
 
-		fun dijkstra' [] = raise Fail "Path not found"
-		|	dijkstra'((currentNode as (x,y))::openList) =
+		fun	dijkstra' openList =
 			let
-				val value = case (Graph.at grid) (x, y) of (SOME (Graph.Node(_, _, value))) => value
+				val (currentNode as (x,y), openList) = if Queue.isEmpty openList then raise Fail "Path not found" else (Queue.head(openList), Queue.dequeue(openList))
+				val value = case (Graph.at grid) (x, y) of (SOME (Graph.Node(_, _, SOME value))) => value
 
 				fun doStuff((adjX, adjY), openList) =
 					let
-						val (adjV, adjAL) = case (Graph.at grid) (adjX, adjY) of (SOME (Graph.Node(_, adjAL, value))) => (value, adjAL)
+						val (adjV, adjAL) = case (Graph.at grid) (adjX, adjY) of (SOME (Graph.Node(_, adjAL, adjV))) => (adjV, adjAL)
 					in
-						if adjV = 0 then
-							((Graph.update grid) ((adjX, adjY), (SOME (Graph.Node((adjX, adjY), adjAL, value+1)))); openList@[(adjX, adjY)])
+						if adjV = NONE then
+							if (Int.abs(x - adjX) + Int.abs(y - adjY)) = 2 then
+								((Graph.update grid) ((adjX, adjY), (SOME (Graph.Node((adjX, adjY), adjAL, SOME (value+14))))); Queue.enqueue(openList, (adjX, adjY)))
+							else
+								((Graph.update grid) ((adjX, adjY), (SOME (Graph.Node((adjX, adjY), adjAL, SOME (value+10))))); Queue.enqueue(openList, (adjX, adjY)))
 						else
 							openList
 					end
@@ -91,13 +94,16 @@ struct
 
 		fun rewind (pos as (x,y)) =
 			let
-				val (value, adjList) = case (Graph.at grid) (x, y) of (SOME (Graph.Node(_, adjList, value))) => (value, adjList)
+				val (value, adjXY, adjList) = case (Graph.at grid) (x, y) of (SOME (Graph.Node(_, adjXY::adjList, SOME value))) => (value, adjXY, adjList)
 
-				fun findNextPos((adjX, adjY)::adjList) = case (Graph.at grid) (adjX, adjY) of (SOME (Graph.Node(_, _, adjV))) => if adjV = (value-1) then (adjX, adjY) else findNextPos(adjList)
+				fun compareV ((x, y), (x2,y2) ) = case ((Graph.at grid) (x, y), (Graph.at grid) (x2, y2)) of
+												  ((SOME (Graph.Node(_, _, SOME val1))), (SOME (Graph.Node(_, _, SOME val2)))) => if val1 < val2 then (x,y) else (x2,y2)
+												  | ((SOME (Graph.Node(_, _, NONE))), (SOME (Graph.Node(_, _, val2)))) => (x2, y2)
+												  | ((SOME (Graph.Node(_, _, val1))), (SOME (Graph.Node(_, _, NONE)))) => (x, y)
+
 			in
-				if value = 1 then [] else pos::rewind( findNextPos(adjList) )
+				if value = 0 then [] else pos::rewind( (foldr compareV adjXY adjList))
 			end
-
 	in
 		(dijkstra'(openList); rev (rewind goal))
 	end
