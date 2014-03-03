@@ -27,26 +27,18 @@ struct
 	abstype grid = Grid of bool Array2.array
 	with
 		(*
-			make (floorPath, objectsPath, walkPath)
-			TYPE: string * string * string -> grid
-			PRE: each of the provided files contains comma-separated integers. The
-			     floorPath file contains the tile IDs for the floor layer of the map
-			     and the objectsPath contains the tile IDs for the objects layer of
-			     the map (which is above the floor layer). Both of these files
-			     contains the same number of lines, with comma-separated tile IDs, as
-			     there are rows in the grid. They also contain the same number of
-			     tile IDs per row. The walkPath file contains a comma-separated
+			make (tilegrid, walkPath)
+			TYPE: TileGrid.tilegrid * string -> grid
+			PRE: The walkPath file contains a comma-separated
 			     list of tileIDs which are walkable; and all other tile IDs are
 			     considiered not walkable.
-			POST: a grid which is the result of merging the floor layer, as specified
-			      by floorPath, with the objects layer, as specified by objectsPath.
-			      Each cell of the grid is either true (walkable) or false (not
-			      walkable) as specified by walkPath.
+			POST: a grid of the same size as tilegrid where each cell of the grid 
+				 is either true (walkable) if that cell had an index in tilegrid that
+				 was specified in file walkPath or false (not walkable) otherwise.
 		*)
-		fun make (floorPath, objectsPath, walkPath) =
+		fun make (tilegrid , walkPath) =
 			let
-				val tilegrid = TileGrid.make(floorPath, objectsPath)
-				val walkable = readWalkable walkPath
+				val walkable = readWalkable walkPath;
 				(*
 					preprocess (tilegrid, walkable)
 					TYPE: TileGrid.tilegrid, int list -> grid
