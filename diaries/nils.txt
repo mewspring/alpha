@@ -25,4 +25,17 @@ For binomial tree to work with a* we need a method to update the priority of an 
 Restructuring of code
 
 18:00 - 23:45
-Implemented pqueue qith Babaks a*, spent a lot of time fighting with a bug which didn't give the shortest route. Eventually found out what was causing it.
+Implemented pqueue with Babaks a*, spent a lot of time fighting with a bug which didn't give the shortest route. Eventually found out what was causing it.
+
+28/2 14:00 - 16:30
+Meeting with team to go through want we want to add/fix
+
+1/3 10:30 - 13:30
+Created prioqueue using lists. Created a signature for pqueue that both the binomialheap and the list could use.
+
+2/3 
+17:00 - 23:00 
+Started writing function specifications for pqueue. Found that the update function for binomial heap could be optimized and re-written. Started doing that. Also made some timers for demo.sml to test execution speed, need larger dataset.
+
+3/3 09:00 - 14:00
+Finished with function specifications and re-wrote update-function which should now be more optimized and stop searching once it finds the node to update. Remowed signature for pqueue because sml doesn't seem to have a way to bind a structure so I can't easily use the list implementation instead of the binoheap. Moved them into seperate files instead, we can now switch between list och binoheap for pqueue by including the desired file in pathfinder.sml
