@@ -1,10 +1,12 @@
-structure Pqueue = 
+structure Pqueue =
 	struct
-	(* BEGIN: From the slides lecture 28 with the addition that each node holds ''a data*)
+	(* NOTE: This code is taken from lecture slide 28 with the addition that each
+	   node holds ''a data. *)
+	(* BEGIN: code from lecture slice 28. *)
 
-	
+
 	(*  REPRESENTATION CONVENTION: the first integer, r, is the rank
-    of the tree; the second integer k is the key at its root; The third 
+    of the tree; the second integer k is the key at its root; The third
     value d can hold any ''a data
 
     REPRESENTATION INVARIANT: the list has r sub-trees,
@@ -29,7 +31,7 @@ structure Pqueue =
 		(* Some selectors *)
 
 		(* rank T
-		   TYPE: binoTree -> int;  
+		   TYPE: binoTree -> int;
 		   PRE:  (none)
 		   POST: the rank of T
 		*)
@@ -55,7 +57,7 @@ structure Pqueue =
 			POST: true if and only if the binomial heap is empty
 		*)
 		fun isEmpty [] = true
-		  | isEmpty _  = false 
+		  | isEmpty _  = false
 
 		(* 	link (T1, T2)
 			TYPE: binoTree * binoTree -> binoTree
@@ -73,14 +75,14 @@ structure Pqueue =
 		(*	insTree (H, T)
 			TYPE: binoHeap * binoTree -> binoHeap
 			PRE:  T satisfies the min-heap property;
-			   rank(T) ≤ rank(T’) for every binomial tree T’ in H 
+			   rank(T) ≤ rank(T’) for every binomial tree T’ in H
 			POST: the union of the elements of H and T
 			VARIANT: |H|
 		*)
 		fun insTree ([], T) = [T]
 		   | insTree (H as T'::H', T) =
 			 if rank T < rank T' then T::H
-			 else if rank T' < rank T then T' :: insTree (H', T) 
+			 else if rank T' < rank T then T' :: insTree (H', T)
 			 else insTree (H', link (T, T'))
 
 		(*	insert (H, k, d )
@@ -96,7 +98,7 @@ structure Pqueue =
 			POST: the union of H1 and H2
 			VARIANT: |H1|·|H2|
 		*)
-		fun merge (H1, []) = H1 
+		fun merge (H1, []) = H1
 		  | merge ([], H2) = H2
 		  | merge (H1 as T1::H1', H2 as T2::H2') =
 			if rank T1 < rank T2 then T1 :: merge (H1', H2)
@@ -130,7 +132,7 @@ structure Pqueue =
 				((k,d), merge(rev H1, H2))
 			end
 
-		(* END --- From the slides lecture 28 *)
+	(* END: code from lecture slice 28. *)
 
 		(* 	update( H, k, d )
 			TYPE: binoHeap * int * ''a -> binoHeap
@@ -140,12 +142,12 @@ structure Pqueue =
 			VARIANT: |H|
 		*)
 		fun update( [], k, d ) = []
-		| 	update( T::Ts, k, d ) = 
+		| 	update( T::Ts, k, d ) =
 			let
 				(* 	update'( T, k, d )
 					TYPE: binoTree * int * ''a -> binoTree * bool
 					PRE: element in T which has data = d must have key > k
-					POST: tuple( T with updated key to k for element which has data = d, 
+					POST: tuple( T with updated key to k for element which has data = d,
 						true if element with data was found or false otherwise )
 					SIDE-EFFECTS: raise Fail if updating with a higher key
 				*)
@@ -182,7 +184,7 @@ structure Pqueue =
 							processChildren( Node( r1, k1, d1, Node(r2,k2,d2,Ts2)::res), Ts, k, d )
 					end
 				val (T1, wasUpdated) = update'(T, k, d)
-			in 
+			in
 				if wasUpdated then
 					T1::Ts
 				else
@@ -192,12 +194,12 @@ structure Pqueue =
 		(* printHeap H
 		TYPE: binoHeap -> ()
 		PRE: (none)
-		POST: (key,data) of each element in H printed in order with increasing tab-width 
+		POST: (key,data) of each element in H printed in order with increasing tab-width
 			for each level of the trees
 		*)
 		fun printHeap( [], _ ) = ()
 		|	printHeap( Node(r,k,d,T)::Ts, tabs ) =
-			(print tabs; print (Int.toString k);print " ";print (Int.toString d); print "\n"; 
+			(print tabs; print (Int.toString k);print " ";print (Int.toString d); print "\n";
 				printHeap(T, tabs ^ "    ");
 			printHeap(Ts,tabs));
 		end

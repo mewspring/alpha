@@ -1,3 +1,6 @@
+(* NOTE: This code is taken from 26queue-simulation.sml with some minor
+   modifications. *)
+(* BEGIN: code from 26queue-simulation.sml *)
 structure Queue =
 struct
 	(*
@@ -64,3 +67,4 @@ struct
 	*)
 	fun toList (xs, ys) = xs @ rev ys
 end;
+(* END: code from 26queue-simulation.sml *)

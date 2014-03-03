@@ -34,9 +34,10 @@ struct
 			     and the objectsPath contains the tile IDs for the objects layer of
 			     the map (which is above the floor layer). Both of these files
 			     contains the same number of lines, with comma-separated tile IDs, as
-			     there are rows in the grid. The walkPath file contains a
-			     comma-separated list of tileIDs which are walkable; and all other
-			     tile IDs are considiered not walkable.
+			     there are rows in the grid. They also contain the same number of
+			     tile IDs per row. The walkPath file contains a comma-separated
+			     list of tileIDs which are walkable; and all other tile IDs are
+			     considiered not walkable.
 			POST: a grid which is the result of merging the floor layer, as specified
 			      by floorPath, with the objects layer, as specified by objectsPath.
 			      Each cell of the grid is either true (walkable) or false (not
