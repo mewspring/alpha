@@ -23,4 +23,31 @@ struct
 	*)
 	fun merge(bottomLayer, topLayer) : tilegrid =
 		ListPair.map (fn (fl, ol) => ListPair.map (fn (f, obj) => if obj <> 0 then obj else f) (fl, ol)) (bottomLayer, topLayer)
+
+	(*
+		loopExtend ( tilegrid, h, v )
+		TYPE: tilegrid * int * int -> tilegrid
+		PRE: v and h >= 0
+		POST: tilegrid extended vertically by v rows and horizontally
+			 by h columns by repeating from the first row and column
+		EXAMPLE:
+		loopExtend( [[1,2,3,4],[1,2,3,4],[1,2,3,4]], 2, 3 ) =
+			 [[1,2,3,4,1,2,3],[1,2,3,4,1,2,3],[1,2,3,4,1,2,3],[1,2,3,4,1,2,3],[1,2,3,4,1,2,3]]
+	*)
+	fun loopExtend( tilegrid, h, v ) =
+		let
+			fun loopExtend( l, 0 ) = l
+			|	loopExtend( l, n ) =
+				let
+					val lenl = (List.length l)
+					val remainder = n mod lenl
+				in
+					if n > lenl then
+						loopExtend( l@l, n-lenl )
+					else
+						l@List.take(l,n)
+				end
+		in
+			loopExtend( (map (fn x=> loopExtend(x,h)) tilegrid), v )
+		end
 end;
