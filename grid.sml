@@ -48,7 +48,7 @@ struct
 				val walkable = readWalkable walkPath
 				(*
 					preprocess (tilegrid, walkable)
-					TYPE: int list list, int list -> bool Array2.array
+					TYPE: TileGrid.tilegrid, int list -> grid
 					PRE: each element in the two-dimensional tilegrid corresponds to a
 					     tile ID and the walkable tile IDs are present in the walkable
 					     list.

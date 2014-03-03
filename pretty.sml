@@ -3,7 +3,13 @@ use "grid.sml";
 
 structure Pretty =
 struct
-
+	(*
+		printGrid grid
+		TYPE: Grid.grid -> unit
+		PRE: true
+		POST: none
+		SIDE-EFFECTS: pretty prints the grid to standard output.
+	*)
 	fun printGrid grid =
 		let
 			val grid' = Grid.toArray2 grid
@@ -15,6 +21,14 @@ struct
 			Array2.appi Array2.RowMajor f region
 		end;
 
+	(*
+		printPath (grid, start, goal, path)
+		TYPE: Grid.grid * (int * int)
+		PRE: true
+		POST: none
+		SIDE-EFFECTS: pretty prints the path from the start to the goal of the
+		              grid to standard output.
+	*)
 	fun printPath (grid, start, goal, path) =
 		let
 			val region = {base=grid, row=0, col=0, nrows=NONE, ncols=NONE}
@@ -36,5 +50,4 @@ struct
 		in
 			Array2.appi Array2.RowMajor f region
 		end;
-
 end;

@@ -17,7 +17,7 @@ struct
 
 	(*
 		getNode grid ((x, y), data)
-		TYPE: bool Array2.array -> int * int * 'a -> node option
+		TYPE: Grid.grid -> int * int * 'a -> node option
 		PRE: true
 		POST: SOME node at the provided (x, y) coordinate with its associated
 		      adjacent nodes and node data, or NONE if the specified coordinate
