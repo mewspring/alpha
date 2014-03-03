@@ -68,20 +68,21 @@ struct
 		val _ = case (Graph.at graph) (sx, sy) of (SOME (Graph.Node(_, adjList, _))) => (Graph.update graph) ((sx, sy), SOME (Graph.Node((start, adjList, SOME 0))))
 
 
-		fun	dijkstra' openList =
+		fun dijkstra' openList =
 			let
 				val (currentNode as (x,y), openList) = if Queue.isEmpty openList then raise Fail "Path not found" else (Queue.head(openList), Queue.dequeue(openList))
 				val value = case (Graph.at graph) (x, y) of (SOME (Graph.Node(_, _, SOME value))) => value
 
-				fun doStuff((adjX, adjY), openList) =
+				fun updateCost((adjX, adjY), openList) =
 					let
 						val (adjV, adjAL) = case (Graph.at graph) (adjX, adjY) of (SOME (Graph.Node(_, adjAL, adjV))) => (adjV, adjAL)
-					in
-						if adjV = NONE then
-							if (Int.abs(x - adjX) + Int.abs(y - adjY)) = 2 then
-								((Graph.update graph) ((adjX, adjY), (SOME (Graph.Node((adjX, adjY), adjAL, SOME (value+14))))); Queue.enqueue(openList, (adjX, adjY)))
+						val newValue = if (Int.abs(x - adjX) + Int.abs(y - adjY)) = 2 then
+								value+14
 							else
-								((Graph.update graph) ((adjX, adjY), (SOME (Graph.Node((adjX, adjY), adjAL, SOME (value+10))))); Queue.enqueue(openList, (adjX, adjY)))
+								value+10
+					in
+						if adjV = NONE orelse valOf adjV > newValue then
+							((Graph.update graph) ((adjX, adjY), (SOME (Graph.Node((adjX, adjY), adjAL, SOME (newValue))))); Queue.enqueue(openList, (adjX, adjY)))
 						else
 							openList
 					end
@@ -89,7 +90,7 @@ struct
 				val adjList = case (Graph.at graph) (x, y) of (SOME (Graph.Node(_, adjList, _))) => adjList
 			in
 				if currentNode = goal then openList else
-				dijkstra' (foldr doStuff openList adjList)
+				dijkstra' (foldr updateCost openList adjList)
 			end
 
 		fun rewind (pos as (x,y)) =
