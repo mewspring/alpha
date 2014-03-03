@@ -63,4 +63,4 @@ struct
 	head, and so on
 	*)
 	fun toList (xs, ys) = xs @ rev ys
-end
+end;

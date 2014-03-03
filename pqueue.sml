@@ -1,4 +1,4 @@
-signature PQUEUE = 
+signature PQUEUE =
 sig
 	type ''a queue
 	val empty : ''a queue
@@ -8,7 +8,7 @@ sig
 	val update : ''a queue * int * ''a -> ''a queue
 end
 
-structure BinoHeap : PQUEUE = 
+structure BinoHeap : PQUEUE =
 	struct
 	(* BEGIN From the slides lecture 28 *)
 	abstype ''a binoTree = Node of int * int * ''a * ''a binoTree list
@@ -20,7 +20,7 @@ structure BinoHeap : PQUEUE =
 
 		val empty = []
 		fun isEmpty [] = true
-		  | isEmpty _  = false 
+		  | isEmpty _  = false
 
 		fun link (T1 as Node(r1,k1,d1,Ts1), T2 as Node(r2,k2,d2,Ts2)) =
 			if k1 < k2 then
@@ -31,12 +31,12 @@ structure BinoHeap : PQUEUE =
 		fun insTree ([], T) = [T]
 		   | insTree (H as T'::H', T) =
 			 if rank T < rank T' then T::H
-			 else if rank T' < rank T then T' :: insTree (H', T) 
+			 else if rank T' < rank T then T' :: insTree (H', T)
 			 else insTree (H', link (T, T'))
 
 		fun insert (H, k, d) = insTree (H, Node(0,k,d,[]))
 
-		fun merge (H1, []) = H1 
+		fun merge (H1, []) = H1
 		  | merge ([], H2) = H2
 		  | merge (H1 as T1::H1', H2 as T2::H2') =
 			if rank T1 < rank T2 then T1 :: merge (H1', H2)
@@ -70,9 +70,9 @@ structure BinoHeap : PQUEUE =
 							( k1, d1, T )
 					end
 				fun swap'( k1, d1, [], res, k, d ) = ( k1, d1, rev res )
-				|	swap'( k1, d1, T::Ts, res, k, d) = 
+				|	swap'( k1, d1, T::Ts, res, k, d) =
 					let
-						val (k2,d2,T1) = swap( k1, d1, T, k, d) 
+						val (k2,d2,T1) = swap( k1, d1, T, k, d)
 					in
 						if d1 = d then
 							if k <= k1 then
@@ -89,19 +89,19 @@ structure BinoHeap : PQUEUE =
 
 		fun printQueue( [], _ ) = ()
 		|	printQueue( Node(r,k,d,T)::Ts, tabs ) =
-			(print tabs; print (Int.toString k);print " ";print (Int.toString d); print "\n"; 
+			(print tabs; print (Int.toString k);print " ";print (Int.toString d); print "\n";
 				printQueue(T, tabs ^ "    ");
 			printQueue(Ts,tabs));
 		end
 end
 
-structure ListPQueue : PQUEUE = 
+structure ListPQueue : PQUEUE =
 	struct
 	type ''a queue = (int * ''a) list
 
 	val empty = []
 	fun isEmpty [] = true
-	|	isEmpty _  = false 
+	|	isEmpty _  = false
 
 	fun insert ([], k, d) = [(k, d)]
 	|	insert ( (x as (k1,d1))::xs, k, d) = if k <= k1 then (k, d)::(x::xs) else x::insert(xs, k, d)
@@ -113,4 +113,4 @@ structure ListPQueue : PQUEUE =
 
 	fun update( queue, k, d ) = insert( remove( queue, d ), k, d )
 
-end
+end;
