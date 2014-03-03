@@ -36,3 +36,7 @@
 	14:00 - 16:45
 		Träffas hemma hos mig och gå igenom koden samt gå igenom vad som behöver
 		göras. Ref repo issues.
+
+2014-03-01
+	13:00 - 15:00
+		Cleanup av tilegrid, grid och graph.
