@@ -1,0 +1,14 @@
+DONE Introduction
+
+Babak Pathfinding
+
+Nils (+others) Design
+
+Algorithms
+	Babak Dijkstra
+	Robin A* (heuristics, one ouf of multiple shortest paths)
+	Nils Priority queues
+
+random User's Manual
+
+Robin Analysis and discussion
