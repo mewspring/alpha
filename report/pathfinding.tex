@@ -47,17 +47,67 @@ traffic.
 
 There are many ways to implement pathfinding algorithms, each with its own
 benefits and drawbacks. Our goal with this project is to research various
-pathfinding algorithms, highlight their strengths and weaknesses and implement
-the A* algorithm, which has become the de facto algorithm in game development
+pathfinding algorithms and highlight their strengths and weaknesses.
+
+We implement the Dijkstra algorithm since it's a simple pathfinding algorithm,
+which is naive but easy to grasp. For performance reasons we implement the A*
+algorithm, which has become the de facto algorithm in game development
 \cite{astar1, defacto}.
+
+Another goal with this project is to implement a minimal interface for
+performing pathfinding.
 
 % === [ Pathfinding ] ==========================================================
 
 \section{Pathfinding}
 
+% Historic (Dijkstra one of the first, A* somewhere during the end of the 70is).
+
+% Graph theory.
+
+% More examples and use cases.
+
+% Mention many different pathfinding algorithms.
+
+% The effects of edge costs.
+%    Shortest path, best path, stealth units.
+
 % === [ Design ] ===============================================================
 
 \section{Design}
+
+% General design description.
+
+% The project have been divided into distinct components, below are the major
+% ones:
+% * vector2. (datatype and interface of 2d array)
+% * grid/tilegrid. (datatype and interface of grid)
+% * graph. (datatype and interface of graph)
+% * pqueue/pqueue_list/queue. (datatype and interface of pqueue)
+% * pathfinding. (datatype and interface of pathfinder)
+% * pretty.
+
+\subsection{Design choices}
+
+% Array vs list of lists vs ... Graphs vs 2d-arrays.
+
+% Deliberate choice to perform expensive preprocessing of the graph so that the
+% pathfinding itself can be faster.
+
+% But we do not preprocess edge costs.
+
+% Prioriy queues: list (simple), binomial heaps (hopefully fast).
+
+% Number of directions (8 directions).
+
+% ~~~ [ Cutting corners ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The pathfinding algorithm can either allow or forbit diagonal steps to cut
+corners. Obviously this decision may affect the shortest path. \cite{astar2}
+
+% It's not perfect, but the code was structured so a future change wouldn't
+% require an extensive rewrite. Special concideration was made to make it easy
+% to extend from (x, y) to (x, y, z).
 
 % === [ Algorithms ] ===========================================================
 
@@ -67,13 +117,29 @@ the A* algorithm, which has become the de facto algorithm in game development
 
 \subsection{Dijkstra}
 
+% How it works.
+
+% Backtracking
+
+% Useful to find the shortest path of multiple targets, or targets at unknown
+% coordinates.
+
+% Its major drawback is performace...
+
+% Time complexity.
+
 % --- [ A* ] -------------------------------------------------------------------
 
 \subsection{A*}
 
-% ~~~ [ Inadmissible heuristics ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+% How it works.
+% Open list, closed list (colors), F, G, H cost, etc.
 
-\subsubsection{Inadmissible heuristics}
+% Time complexity.
+
+% ~~~ [ Heuristics ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+\subsubsection{Heuristics}
 
 \textit{Heuristics using Manhattan distance}
 
@@ -81,7 +147,7 @@ If the pathfinding algorithm overestimates the distance H it may fail to find
 the shortest path. For these cases we call the heuristics inadmissible.
 \cite{astar2}
 
-\textit{Hybrid heuristics (possible solution)}
+\textit{Diagonal heuristics}
 
 Instead of using pure Manhattan distance for the H cost we could use a hybrid
 between the Manhattan distance and ''as the crow flies''.
@@ -105,9 +171,26 @@ heuristic could no longer be inadmissible.
 The cost using a hybrid heuristic would in this case be $ 1*14 + 3*10 = 44 $,
 since there is one diagonal and three horizontal steps from 's' to 'g'.
 
-% ~~~ [ Treatment of ties ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\textit{Inadmissible heuristics}
 
-\subsubsection{Treatment of ties}
+% ~~~ [ Priority queues ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+\subsubsection{Priority queues}
+
+\begin{enumerate}
+\item{List}
+\item{Binomial Heap}
+\end{enumerate}
+
+\textit{Similarities to Dijkstra}
+
+% The Dijkstra algorithm could be implemented using A* with a heuristic function
+% which always returns 0.
+
+
+% ~~~ [ Multiple shortest paths ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+\subsubsection{One out of multiple shortest paths}
 
 When two nodes have the same F score one must be chosen over the other. This
 choise will not affect the length of the path, but it may affect the path
@@ -115,30 +198,47 @@ itself. Another way to put this is that depending on how ties are treated two
 different implementations of the A* algorithm may find different paths of equal
 length. \cite{astar2}
 
-% ~~~ [ Cutting corners ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-\subsubsection{Cutting corners}
-
-The pathfinding algorithm can either allow or forbit diagonal steps to cut
-corners. Obviously this decision may affect the shortest path. \cite{astar2}
-
-% === [ Design choices ] =======================================================
-
-\section{Design choices}
-
-% === [ Implementation ] =======================================================
-
-\section{Implementation}
-
 % === [ User's Manual ] ========================================================
 
 \section{User's Manual}
 
 % TODO: Use cases, examples...
 
+% ref: demo.sml
+
+% Mention the files and what content they contain. Mention the most important
+% functions and their arguments.
+
 % === [ Analysis and discussion ] ==============================================
 
 \section{Analysis and discussion}
+
+% Implementation analysis.
+
+% Test cases, how the we verify that the implementation is correct?
+
+% Is there anything that doesn't work. It is possible to walk thorugh diagonal
+% walls.
+
+% Benchmarks. Is A* measurabley more performable than Dijkstra. How does the
+% performance of list and binomal heaps differ.
+
+\subsection{Future work}
+
+% Preprocess edge costs.
+
+% Disallow diagonal walks through walls.
+
+% Pathfinding in the third dimension.
+
+% Hot queue.
+
+% Formal verifications.
+
+% Make an interlanguage bridge to make the SML API callable from C. ref: mlton
+
+% Make purely functional (if we don't finish this) and measure the performance
+% impact.
 
 \pagebreak
 
