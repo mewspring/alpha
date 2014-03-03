@@ -120,12 +120,13 @@ struct
 				fun processAdjacent(adjPos as (adjX, adjY), openList) =
 					let
 						val (adjV, adjAL) = case (Graph.at grid) adjPos of (SOME (Graph.Node(_, adjAL, adjV))) => (adjV, adjAL)
-					in
-						if adjV = NONE then
-							if (Int.abs(currentX - adjX) + Int.abs(currentY - adjY)) = 2 then
-								((Graph.update grid) (adjPos, (SOME (Graph.Node(adjPos, adjAL, SOME (value+14))))); Queue.enqueue(openList, adjPos))
+						val newValue = if (Int.abs(currentX - adjX) + Int.abs(currentY - adjY)) = 2 then
+								value+14
 							else
-								((Graph.update grid) (adjPos, (SOME (Graph.Node(adjPos, adjAL, SOME (value+10))))); Queue.enqueue(openList, adjPos))
+								value+10
+					in
+						if adjV = NONE orelse valOf adjV > newValue then
+							((Graph.update grid) (adjPos, (SOME (Graph.Node(adjPos, adjAL, SOME (newValue))))); Queue.enqueue(openList, adjPos))
 						else
 							openList
 					end
