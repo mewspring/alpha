@@ -1,29 +1,28 @@
-use "helpers.sml";
 use "grid.sml";
+use "helpers.sml";
 
 structure Pretty =
 struct
 	(*
 		printGrid grid
-		TYPE: Grid.grid -> unit
+		TYPE: bool Array2.array -> unit
 		PRE: true
 		POST: none
 		SIDE-EFFECTS: pretty prints the grid to standard output.
 	*)
 	fun printGrid grid =
 		let
-			val grid' = Grid.toArray2 grid
-			val region = {base=grid', row=0, col=0, nrows=NONE, ncols=NONE}
-			fun f (x, y, a) =
+			val region = {base=grid, row=0, col=0, nrows=NONE, ncols=NONE}
+			fun f (y, x, a) =
 				(if a then print(".") else print("#");
-				if y = Grid.width grid - 1 then print("\n") else ())
+				if x = Array2.nCols grid - 1 then print("\n") else ())
 		in
 			Array2.appi Array2.RowMajor f region
 		end;
 
 	(*
 		printPath (grid, start, goal, path)
-		TYPE: Grid.grid * (int * int)
+		TYPE: bool Array2.array * (int * int)
 		PRE: true
 		POST: none
 		SIDE-EFFECTS: pretty prints the path from the start to the goal of the
@@ -43,7 +42,7 @@ struct
 					print(".")
 				else
 					print("#");
-				if x = Array2.nCols(grid)-1 then
+				if x = Array2.nCols grid - 1 then
 					print("\n")
 				else
 					())
