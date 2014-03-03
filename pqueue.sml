@@ -137,45 +137,57 @@ structure Pqueue =
 			PRE: element in H which has data = d must have key > k
 			POST: H with updated key to k for element which has data = d
 			SIDE-EFFECTS: raise Fail if updating with a higher key
+			VARIANT: |H|
 		*)
-		fun update( Ts, k, d ) = 
+		fun update( [], k, d ) = []
+		| 	update( T::Ts, k, d ) = 
 			let
 				(* 	update'( T, k, d )
-					TYPE: binoTree * int * ''a -> binoTree
+					TYPE: binoTree * int * ''a -> binoTree * bool
 					PRE: element in T which has data = d must have key > k
-					POST: T with updated key to k for element which has data = d
+					POST: tuple( T with updated key to k for element which has data = d, 
+						true if element with data was found or false otherwise )
 					SIDE-EFFECTS: raise Fail if updating with a higher key
 				*)
 				fun update'( Node( r, k1, d1, Ts), k, d ) =
-					if d1 = d then
+					if d1 = d then (*Node found*)
 						if k < k1 then
-							Node( r, k, d1, Ts )
+							(Node( r, k, d1, Ts ),true)
 						else
 							raise Fail "update'-> Trying to update with a higher or equal key"
 					else
 						processChildren( Node(r, k1, d1, [] ), Ts, k, d )
 
 				(* 	processChildren( T, Ts, k, d )
-				TYPE: binoTree * binoTree list * int * ''a -> binoTree
+				TYPE: binoTree * binoTree list * int * ''a -> binoTree * bool
 				PRE: element in Ts which has data = d must have key > k
-				POST: T with Ts added as children but with updated key to k for element in Ts
+				POST: tuple( T with Ts added as children but with updated key to k for element in Ts
 					which has data = d. If key of element in Ts < key of element T then these
-					two elements will swap place to maintain the invariant for T
+					two elements will swap place to maintain the invariant for T,
+					true if element with data was found in Ts or false otherwise )
 				SIDE-EFFECTS: raise Fail if updating with a higher key
 				VARIANT: |Ts|
 				*)
-				and	processChildren( Node(r1,k1, d1, res), [], k, d ) = Node( r1, k1, d1, rev res )
+				and	processChildren( Node(r1,k1, d1, res), [], k, d ) = (Node( r1, k1, d1, rev res ),false)
 				|	processChildren( Node(r1,k1, d1, res), T::Ts, k, d ) =
 					let
-						val Node(r2,k2,d2,Ts2) = update'( T, k, d)
+						val (Node(r2,k2,d2,Ts2), wasUpdated ) = update'( T, k, d)
 					in
-						if k2 < k1 then (* swap *)
-							Node( r1, k2, d2, (rev res)@(Node(r2,k1,d1,Ts2)::Ts))
+						if wasUpdated then (*stop looking*)
+							if k2 < k1 then (* swap *)
+								(Node( r1, k2, d2, (rev res)@(Node(r2,k1,d1,Ts2)::Ts)),true)
+							else
+								(Node( r1, k1, d1, (rev res)@(Node(r2,k2,d2,Ts2)::Ts)),true)
 						else
 							processChildren( Node( r1, k1, d1, Node(r2,k2,d2,Ts2)::res), Ts, k, d )
 					end
-
-			in map (fn x => update'( x, k, d )) Ts end
+				val (T1, wasUpdated) = update'(T, k, d)
+			in 
+				if wasUpdated then
+					T1::Ts
+				else
+					T1::update( Ts, k, d )
+			end
 
 		(* printHeap H
 		TYPE: binoHeap -> ()
