@@ -1,5 +1,6 @@
 use "graph.sml";
 use "pqueue.sml";
+(*use "pqueue_list.sml";*)
 use "queue.sml";
 
 structure Pathfinder =
@@ -17,12 +18,12 @@ struct
 	fun aStar ( grid', start : (int * int), goal)  =
 		let
 			val grid = Graph.copy(grid');
-			val openList = BinoHeap.insert( BinoHeap.empty, 0,start );
+			val openList = Pqueue.insert( Pqueue.empty, 0,start );
 			fun getParent pos = case (Graph.at grid) pos of (SOME (Graph.Node(_, _, (_,_,_, parent )))) => parent
 			fun pathfind'  ([]) = raise Fail "Path not found"
 			|	pathfind' ( openList ) =
 				let
-					val ((currentF, currentNode), openList ) = BinoHeap.extractMin( openList );
+					val ((currentF, currentNode), openList ) = Pqueue.extractMin( openList );
 					fun calculateG ((x, y), (adjX, adjY)) = case ((Graph.at grid) (x, y)) of (SOME (Graph.Node(_, _, (_, g, _, _)))) => if (Int.abs(x - adjX) + Int.abs(y - adjY)) = 2 then g+14 else g+10
 					fun calculateH((x,y), (ex, ey)) = 10*(Int.abs(x - ex) + Int.abs(y - ey))
 					(* Diagonal heuristic
@@ -63,8 +64,8 @@ struct
 					if currentNode = goal then () else
 					pathfind' (foldr(fn (adjPos, xs) => case processAdjacent adjPos of
 						(0) => xs
-						| (1) => BinoHeap.insert(xs, getF adjPos, adjPos)
-						| (2) => BinoHeap.update(xs, getF adjPos, adjPos)
+						| (1) => Pqueue.insert(xs, getF adjPos, adjPos)
+						| (2) => Pqueue.update(xs, getF adjPos, adjPos)
 						 ) openList adjList)
 				end
 
