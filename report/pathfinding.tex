@@ -143,7 +143,17 @@ case.
 
 % Open list, closed list (colors), F, G, H cost, etc.
 
+As mentioned in section \ref{Pathfinding} most pathfinding algorithms can be
+described using graph theory. Each node of a graph represents a walkable cell
+and the edge between two nodes connects them and makes it possible to perform a
+step from one node to the other. The concept of edge costs captures the time it
+takes for an entity to step from one node to another, which may vary depending
+on the terain of the edge and other factors.
 
+For each node of the graph the A* algorithm keeps track of three different cost
+values, namely \textit{F}, \text{G} and \text{H}. The \textit{G} value of a node
+\textit{C} represents the cost of traversing the edges from the start node
+\textit{S} to the node \textit{C}.
 
 % Time complexity.
 
