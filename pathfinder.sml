@@ -25,7 +25,6 @@ struct
 				PRE: start(aStar) and goal(aStar) have to be valid coordinates in graph(in aStar).
 				POST: SOME modified openList(see documentation) if there is a shortest path from start(aStar) to goal(aStar). NONE, otherwise.
 				VARIANT: length of openList
-				SIDE-EFFECTS: ??
 			*)
 			fun pathfind'  ([]) = NONE
 			|	pathfind' ( openList ) =
@@ -74,8 +73,6 @@ struct
 						PRE: adjPos has to be a valid coordinate in graph(in aStar).
 						POST: 0 if the color of adjPos in graph(aStar) is Black, or if the g value of adjPos in graph is bigger than or equal
 							  the new g value(see documentation) of currentNode(in pathfind'). 1 if the color of adjPos in graph is White and 2 otherwise.
-						SIDE-EFFECTS: adjPos in graph is updated with a new color, g value, h value and parent if the color of adjPos in graph is White or
-									  Gray(and the g value of adjPos in graph is lower than the new g value of currentNode).
 					*)
 					fun processAdjacent adjPos =
 						let
@@ -147,7 +144,6 @@ struct
 		TYPE: int option Graph.graph * (int * int) * (int * int) -> (int * int) list option
 		PRE: Both start and goal have to be valid coordinates in graph.
 		POST: SOME list containing coordinates(in the form of (x,y)) with a shortest path from start to goal in graph. NONE, otherwise.
-		SIDE-EFFECTS: ??
 		EXCEPTIONS: Subscript raised if either start or goal's not a valid coordinate in graph.
 	*)
 	fun dijkstra ( graph', start : (int * int), goal) =
@@ -161,13 +157,12 @@ struct
 			TYPE: (int * int) queue -> (int * int) queue option
 			PRE: start(dijkstra) and goal(dijkstra) have to be valid coordinates in graph(in dijkstra).
 			POST: SOME modified openList(see documentation) if there is a shortest path from start(dijkstra) to goal(dijkstra). NONE, otherwise.
-			SIDE-EFFECTS: ??
 			VARIANT: length of openList
 		*)
 		fun	dijkstra' openList =
 			if Queue.isEmpty openList then NONE else
 			let
-				val (currentNode as (currentX, currentY), openList) = if Queue.isEmpty openList then raise Fail "Path not found" else (Queue.head(openList), Queue.dequeue(openList))
+				val (currentNode as (currentX, currentY), openList) = (Queue.head(openList), Queue.dequeue(openList))
 				val value = case (Graph.at graph) currentNode of (SOME (Graph.Node(_, _, SOME value))) => value
 
 				(*
@@ -175,10 +170,6 @@ struct
 					TYPE: (int * int ) * int option list -> int option list
 					PRE: adjPos has to be a valid coordinate in graph(in dijkstra).
 					POST: openList with adjPos added to its tail(enqueued) if the value(see documentation) of adjPos in graph(dijkstra) is NONE; openList otherwise.
-					SIDE-EFFECTS: If the value(see documentation) of adjPos in graph is NONE then it's updated to the value of currentNode(dijkstra') + 10 if
-					              adjPos is adjacent in a horizontal or vertical position to currentNode. Otherwise, adjPos must be adjacent in a diagonal position to
-					              currentNode and is updated with the value of currentNode + 14. adjPos' value in graph is also updated in the case that
-					              SOME value already exists in that position and said value is lower than the new value(see documentation) of currentNode(in dijkstra').
 					EXCEPTIONS: Fail raised if there is no path from start to goal in graph.
 					VARIANT: length of openList
 				*)
