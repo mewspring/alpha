@@ -82,36 +82,38 @@ another, which may vary depending on the terrain of the edge and other factors.
 % === [ Design ] ===============================================================
 
 \section{Design}
-Our solution for pathfinding works on a 2d grid, where each tile has a (x,y) coordinate and is considered to be either walkable or not. Given the coordinates for start (A) and end (B) tiles our program finds a shortest path and outputs the coordinates of the tiles to traverse in order to get from A to B. The program is divided into seperate components that each perform one of the steps involved.
+Our solution for pathfinding operates on a 2d grid, where each tile has a (x,y) coordinate and is considered to be either walkable or non-walkable. Given the coordinates for start (A) and end (B) tiles our program finds a shortest path and outputs the coordinates of the tiles to traverse in order to get from A to B. The program is divided into seperate components that each perform one of the steps involved.
 
 \subsection{Components}
 \subsubsection{Tilegrid}
 
-Responsible for reading the map data from files and making it available to the program. Implements function \textit{make} which takes as argument the path to a file, which includes the tiles for a map, and returns a \textit{tilegrid} data structure that holds it's contents. The file is comma-seperated ascii file of integers that represents a tile and it's value, the type (wooden floor, grass, concrete wall etc). Each row holds one horizontal set of tiles and it's length is considered the width of the map while the number of rows is considered the height.
-\\Example of a map of width 4 and height 3 and two different tiles; 0 and 1
-
+Responsible for reading the map data from files and making it available to the program. Implements function \textit{make} which takes as argument the path to a file, which includes the tiles for a map, and returns a \textit{tilegrid} data structure that holds it's contents. The file is a comma-seperated ascii file of integers that represents a tile and it's value, the type (wooden floor, grass, concrete wall etc). Each row holds one horizontal set of tiles and it's length is considered the width of the map while the number of rows is considered the height.
+\begin{figure}[htbp]
+\centering
 \texttt{1,0,1,1,\\
 0,0,0,1,\\
 1,1,1,1,\\
 }
+\caption{Map of width 4 and height 3 and two different tiles; 0 and 1}
+\end{figure}
 
 A second function \textit{merge} is used to merge two layers of map-data. It takes two tilegrids and returns a tilegrid where every tile has the same value as that in the second tilegrid unless that is a value of 0, then it has the value of that in the first tilegrid. We decided to support this because one popular tile map-editor\cite{mapeditor} builds levels in layers this way.
 
 \subsubsection{Grid}
 
-A similar datastructure is what we call a \textit{grid}. It's a 2d grid of boolean values where each tile is simply true if walkable or false for non-walkable. We include a function for generating a grid out of a tilegrid and a file which contains the values of walkable tiles. This way a user of our program can have multiple files which specify a different set of units that can traverse a different set of tiles of the same map and generate a different grid for each one. In the interface we also have methods for checking if a tile is walkable, getting walkable adjacent tiles of a tile as well as getting the dimensions of a grid. We chose Array2 as the underlying datastructure of the grid because we needed element access in constant time, we could have chosen a Vector but Array2 provides a convenient way of accessing elements using 2d coordinates.
+A similar datastructure is what we call a \textit{grid}. It's a 2d grid of boolean values where each tile is simply true if walkable or false for non-walkable. We include a function for generating a grid out of a tilegrid together with a file which contains the values of tiles that should be considered as walkable. This way a user of our program can have multiple files which specify a different set of units that can traverse a different set of tiles of the same map and generate a different grid for each one. In the interface we also have functions for checking if a tile is walkable, getting walkable adjacent tiles of a tile as well as getting the dimensions of a grid. We chose Array2 as the underlying datastructure of the grid because we needed element access in constant time, we could have chosen a Vector but Array2 provides a convenient way of accessing elements using 2d coordinates. 
 
 \subsubsection{Graph}
-Our abstract datatype \textit{graph} is what holds the graph of nodes. A node is a walkable tile with edges that connects it to adjacent walkable nodes, it also has a component to hold arbitrary data needed by the pathfinder algorithms. We provide methods to create a graph from a grid, update and get methods for a node provided it's coordinates and a copy function to make a new copy of the whole graph. We could have skipped this datatype and have our pathfinders work directly with a grid but we dicided to do this preprocessing and create a node graph so that we could re-use it and do multiple pathfindings without having to calculate adjacent nodes each time. In agreement with our supervisor, we chose Array2 as the underlaying datastructure for the graph because we needed to efficiently update and get data from a set of nodes and Array2 does this in constant time with 2d coordinates as input.
+Our abstract datatype \textit{graph} is what holds the graph of nodes. A node is a walkable tile with edges that connects it to adjacent walkable nodes, it also has a component to hold arbitrary data needed by the pathfinder algorithms. We provide functions to create a graph from a grid, update and get functions for a node provided its coordinates and a copy function to make a new copy of the whole graph. We could have skipped this datatype and have our pathfinders work directly with a grid but we dicided to do this preprocessing and create a node graph so that we could re-use it and do multiple pathfindings without having to calculate adjacent nodes each time. In agreement with our supervisor, we chose Array2 as the underlaying datastructure for the graph because we needed to efficiently update and get data from an element and Array2 does this in constant time with 2d coordinates as input.
 
 \subsubsection{Pathfinder}
-We provide two different pathfinders that use different algorithms for finding the shortest path, A* and Dijsktra (see section \ref{Algorithms}). Each one has a function for finding a path as well as creating a graph that includes the extra data needed by the algorithm. Once the graph has been created it can be sent to the function that does the actual pathfinding, along with start and end coordinates, and the path is sent back. In the case when a path can't be found the methods will return NONE. We decided to provide two different algorithms mainly because of interest for how they work but also to test their performance (see section \ref{Analysis}).
+We provide two different pathfinders that use different algorithms for finding the shortest path, A* and Dijsktra (see section \ref{Algorithms}). Each one has a function for finding a path as well as creating a graph that includes the extra data needed by the algorithm. Once the graph has been created it can be sent to the function that does the actual pathfinding, along with start and end coordinates, and the path is sent back. In the case when a path can't be found the functions will return NONE. We decided to provide two different algorithms mainly because of interest for how they work but also to test their performance (see section \ref{Analysis}).
 
 \subsubsection{Priority queue}
-The A* algorithm needs to keep a queue with nodes to process and sort them depending on a key value, for this we created a datatype called queue. We provide methods to create an empty queue, insert and update nodes and a function to extract the node with the lowest key. We decided to create two different implementations, one using a binomial heap and one using a list (see section \ref{Priority queues}) to see how they would fair performance wise.
+The A* algorithm needs to keep a queue with nodes to process and sort them depending on a key value, for this we created a datatype called queue. We provide functions to create an empty queue, insert and update nodes and a function to extract the node with the lowest key. We decided to create two different implementations, one using a binomial heap and one using a list (see section \ref{Priority queues}) to see how they would fair performance wise. 
 
 \subsubsection{Pretty}
-Pretty has methods to display a grid, or a grid and the path as return by a pathfinder, in the the form of ascii art in the standard output.
+Pretty has functions to display a grid, or a grid and the path as return by a pathfinder, in the the form of ascii art in the standard output.
 
 
 
@@ -292,7 +294,7 @@ A priority queue is a queue of elements with a priority. The element with the hi
 A one dimensional list where the elements are ordered by rising key value. Popping the element with the highest priority from the queue is just a matter of taking the first element in the list which is a constant time operation. Elements are inserted at the right position by comparing the key of the element to insert with every consecutive element from the beginning of the list until a element with a higher key value is found. Updating the priority of a element is a matter of looking through the list, element by element, until we find one with a specific identifier, removing that from the list and inserting it again with the new priority. Inserting and updating (remove and insert) are both operations that take linear time because we potentially have to look at every element in the list.
 
 \item{Binomial Heap}
-A binomial min-heap is a list of binomial trees that satisfy the min-heap property such that the key of each non-root is a least the key of it's parent.  Fully explaining a binomial heap however is not within the scope of this report.
+A binomial min-heap is a list of binomial trees that satisfy the min-heap property such that the key of each non-root is a least the key of its parent. The number of trees in a binomial heap is at most lg|h|+1 ( h is total number of nodes in all trees). Because finding the node with the lowest key is a matter of looking at the root of each tree, it becomes a O(lg|h|) operation. Inserting a new node also takes O(lg|h|) at worst. Updating a node to have a higher priority is a matter of finding the node and changing its key, then move it up the tree by swapping place with its parents until the key is higher than the parent or it becomes the root. Fully explaining a binomial heap however is not within the scope of this report but more details are available in lecture 28 \cite{lecture28} where our implementation (except update function) also is borrowed from.
 
 \end{enumerate}
 
