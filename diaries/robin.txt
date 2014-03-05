@@ -54,5 +54,6 @@
 		Skriv om edge costs för A* i rapporten.
 
 2014-03-05
-	15:00 - xx:xx
-		Skriv på rapport hemma hos Nils. Framförallt sektionerna heuristics, ...
+	15:00 - 21:00
+		Skriv på rapport hemma hos Nils. Framförallt sektionerna heuristics.
+		Simple demo.
