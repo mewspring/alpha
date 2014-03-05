@@ -1,4 +1,9 @@
 use "helpers.sml";
+use "grid.sml";
+use "pretty.sml";
+use "pathfinder.sml";
+use "tilegrid.sml";
+use "pqueue.sml";
 
 print("--- [ getIntList ] -------------------------------------------------------------\n");
 
@@ -8,12 +13,24 @@ val test = (2, Helpers.getIntList "10,foo,20" = [10,20]);
 print("--- [ contains ] ---------------------------------------------------------------\n");
 
 val test = (1, Helpers.contains ([1,2,3], 3) = true);
-val test = (1, Helpers.contains ([1,2,3], 4) = false);
+val test = (2, Helpers.contains ([1,2,3], 4) = false);
 
-use "grid.sml";
-use "pretty.sml";
-use "pathfinder.sml";
-use "tilegrid.sml";
+print("--- [ tilegrid ] ---------------------------------------------------------------\n");
+val test = (1,
+	TileGrid.merge(
+	[
+	 	[ 1,1,1,1 ],
+	 	[ 1,1,1,1 ],
+	 	[ 1,1,1,1 ]
+	],[
+	 	[ 0,2,2,2 ],
+	 	[ 2,2,0,2 ],
+	 	[ 0,2,2,0 ]
+	] ) = [
+	 	[ 1,2,2,2 ],
+	 	[ 2,2,1,2 ],
+	 	[ 1,2,2,1 ]
+	] );
 
 val tilegrid = TileGrid.merge(TileGrid.make("demo/floor.txt"),TileGrid.make("demo/objects.txt"));
 val grid = Grid.make(tilegrid, "demo/walk.txt");
