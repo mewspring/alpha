@@ -75,6 +75,28 @@ performing pathfinding.
 % === [ Design ] ===============================================================
 
 \section{Design}
+Our solution for pathfinding works on a 2d grid, where each tile has a (x,y) coordinate and is considered to be either walkable or not. Given the coordinates for start (A) and end (B) tiles our program finds a shortest path and outputs the coordinates of the tiles to traverse in order to get from A to B. The program is divided into seperate components that each perform one of the steps involved.
+
+\textbf{Tilegrid}
+
+Responsible for reading the map data from files and making it available to the program. Implements method \textit{make} which takes as argument the path to a file, which includes the tiles for a map, and returns a \textit{tilegrid} data structure that holds it's contents. The file is comma-seperated ascii file of integers that represents a tile and it's value, the type (wooden floor, grass, concrete wall etc). Each row holds one horizontal set of tiles and it's length is considered the width of the map while the number of rows is considered the height. 
+\\Example of a map of width 4 and height 3 and two different tiles; 0 and 1
+
+\texttt{1,0,1,1,\\
+0,0,0,1,\\
+1,1,1,1,\\
+}
+
+A second method \textit{merge} is used to merge two layers of map-data. It takes two tilegrids and returns a tilegrid where every tile has the same value as that in the second tilegrid unless that is a value of 0, then it has the value of that in the first tilegrid. We decided to support this because one popular tile map-editor\cite{mapeditor} builds levels in layers this way.    
+
+\textbf{Grid}
+
+A similar datastructure is what we call a \textit{grid}. It's a 2d grid of boolean values where each tile is simply true if walkable or false for non-walkable. We include a method for generating a grid out of a tilegrid and a file which contains the values of walkable tiles. This way a user of our program can have multiple files which specify a different set of units that can traverse a different set of tiles of the same map and generate a different grid for each one. In the interface we also have methods for checking if a tile is walkable, getting walkable adjacent tiles to a tile as well as getting the dimensions of a grid. We chose Array2 as the underlying datastructure of the grid because we needed element access in constant time and Array2 provides a convenient way of accessing elements using 2d coordinates.
+
+\textbf{Graph}
+
+
+
 
 % General design description.
 
