@@ -62,6 +62,12 @@ performing pathfinding.
 \section{Pathfinding}
 \label{Pathfinding}
 
+Most pathfinding algorithms can be described using graph theory. Each node of a
+graph represents a walkable cell and the edge between two nodes connects them
+and makes it possible to perform a step from one node to the other. The concept
+of edge costs captures the time it takes for an entity to step from one node to
+another, which may vary depending on the terrain of the edge and other factors.
+
 % Historic (Dijkstra one of the first, A* somewhere during the end of the 70is).
 
 % Graph theory.
@@ -164,15 +170,6 @@ to bring you closer to the goal. This reduces the number of nodes which have to
 be processed in average and therefore decreases the total runtime of the average
 case.
 
-% TODO: merge/move the following paragraph with/to section Pathfinding?
-
-As mentioned in section \ref{Pathfinding} most pathfinding algorithms can be
-described using graph theory. Each node of a graph represents a walkable cell
-and the edge between two nodes connects them and makes it possible to perform a
-step from one node to the other. The concept of edge costs captures the time it
-takes for an entity to step from one node to another, which may vary depending
-on the terrain of the edge and other factors.
-
 % ~~~ [ Heuristics ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % TODO: rewrite section Heuristics.
@@ -245,6 +242,9 @@ To summarize:
 
 \subsubsection{Tracking node visits}
 \label{Tracking node visits}
+
+It is important to keep track of visited nodes so that no node is processed more
+than once.
 
 % Time complexity.
 
