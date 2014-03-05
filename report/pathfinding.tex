@@ -60,6 +60,7 @@ performing pathfinding.
 % === [ Pathfinding ] ==========================================================
 
 \section{Pathfinding}
+\label{Pathfinding}
 
 % Historic (Dijkstra one of the first, A* somewhere during the end of the 70is).
 
@@ -79,7 +80,7 @@ Our solution for pathfinding works on a 2d grid, where each tile has a (x,y) coo
 
 \textbf{Tilegrid}
 
-Responsible for reading the map data from files and making it available to the program. Implements method \textit{make} which takes as argument the path to a file, which includes the tiles for a map, and returns a \textit{tilegrid} data structure that holds it's contents. The file is comma-seperated ascii file of integers that represents a tile and it's value, the type (wooden floor, grass, concrete wall etc). Each row holds one horizontal set of tiles and it's length is considered the width of the map while the number of rows is considered the height. 
+Responsible for reading the map data from files and making it available to the program. Implements method \textit{make} which takes as argument the path to a file, which includes the tiles for a map, and returns a \textit{tilegrid} data structure that holds it's contents. The file is comma-seperated ascii file of integers that represents a tile and it's value, the type (wooden floor, grass, concrete wall etc). Each row holds one horizontal set of tiles and it's length is considered the width of the map while the number of rows is considered the height.
 \\Example of a map of width 4 and height 3 and two different tiles; 0 and 1
 
 \texttt{1,0,1,1,\\
@@ -87,7 +88,7 @@ Responsible for reading the map data from files and making it available to the p
 1,1,1,1,\\
 }
 
-A second method \textit{merge} is used to merge two layers of map-data. It takes two tilegrids and returns a tilegrid where every tile has the same value as that in the second tilegrid unless that is a value of 0, then it has the value of that in the first tilegrid. We decided to support this because one popular tile map-editor\cite{mapeditor} builds levels in layers this way.    
+A second method \textit{merge} is used to merge two layers of map-data. It takes two tilegrids and returns a tilegrid where every tile has the same value as that in the second tilegrid unless that is a value of 0, then it has the value of that in the first tilegrid. We decided to support this because one popular tile map-editor\cite{mapeditor} builds levels in layers this way.
 
 \textbf{Grid}
 
@@ -163,25 +164,21 @@ to bring you closer to the goal. This reduces the number of nodes which have to
 be processed in average and therefore decreases the total runtime of the average
 case.
 
-% Open list, closed list (colors), F, G, H cost, etc.
+% TODO: merge/move the following paragraph with/to section Pathfinding?
 
 As mentioned in section \ref{Pathfinding} most pathfinding algorithms can be
 described using graph theory. Each node of a graph represents a walkable cell
 and the edge between two nodes connects them and makes it possible to perform a
 step from one node to the other. The concept of edge costs captures the time it
 takes for an entity to step from one node to another, which may vary depending
-on the terain of the edge and other factors.
-
-For each node of the graph the A* algorithm keeps track of three different cost
-values, namely \textit{F}, \text{G} and \text{H}. The \textit{G} value of a node
-\textit{C} represents the cost of traversing the edges from the start node
-\textit{S} to the node \textit{C}.
-
-% Time complexity.
+on the terrain of the edge and other factors.
 
 % ~~~ [ Heuristics ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+% TODO: rewrite section Heuristics.
+
 \subsubsection{Heuristics}
+\label{Heuristics}
 
 \textit{Heuristics using Manhattan distance}
 
@@ -214,6 +211,42 @@ The cost using a hybrid heuristic would in this case be $ 1*14 + 3*10 = 44 $,
 since there is one diagonal and three horizontal steps from 's' to 'g'.
 
 \textit{Inadmissible heuristics}
+
+% F, G, H costs.
+
+\subsubsection{Edges costs}
+
+In order to prioritize the processing of nodes the A* algorithm keeps track of
+three different cost values for each node in the graph, namely \textit{F},
+\text{G} and \text{H}.
+
+The \textit{G} value of a node \textit{C} represents the cost of traversing the
+edges from the start node \textit{S} to the current node \textit{C} along a
+given path. It is important to note that there may be more than one path from
+\textit{S} to \textit{C}; more about this in section \ref{Tracking node visits}.
+
+The \textit{H} value of a node \textit{C} is given by the estimated cost of
+traveling from \textit{C} to the end node \textit{E}. This estimation is given
+by a heuristic function, which is further described in section \ref{Heuristics}.
+
+The \textit{F} value of a node \textit{C} is given by the sum of the \textit{G}
+and \textit{H} cost of \textit{C}.
+
+To summarize:
+\begin{itemize}
+	\item \textit{F}: $ G + H $.
+	\item \textit{G}: the cost of traversing the edges from \textit{S} to
+	\textit{C}.
+	\item \textit{H}: the estimated cost of traversing the edges from \textit{C}
+	to \textit{E}.
+\end{itemize}
+
+% Open list, closed list (colors).
+
+\subsubsection{Tracking node visits}
+\label{Tracking node visits}
+
+% Time complexity.
 
 % ~~~ [ Priority queues ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
