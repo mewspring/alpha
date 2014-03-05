@@ -9,22 +9,43 @@ struct
 
 	(*
 		aStar (graph, start, goal )
-		TYPE: (Pathfinder.Color * int * int * (int * int)) Graph.graph * (int * int) * (int * int) -> (int * int) list
+		TYPE: (Pathfinder.Color * int * int * (int * int)) Graph.graph * (int * int) * (int * int) -> (int * int) list option
 		PRE: Both start and goal have to be valid coordinates in graph.
-		POST: list containing coordinates(in the form of (x,y)) with a shortest path from start to goal in graph.
-		SIDE-EFFECTS: ?? (none since graph is copied? Does that count as a side-effect of itself?)
-		EXCEPTIONS: Fail raised if there is no path from start to goal in graph. Subscript raised if either start or goal's not a valid coordinate in graph.
+		POST: SOME list containing coordinates(in the form of (x,y)) with a shortest path from start to goal in graph. NONE if there is no path.
+		EXCEPTIONS: Subscript raised if either start or goal's not a valid coordinate in graph.
 	*)
 	fun aStar ( graph', start : (int * int), goal)  =
 		let
 			val graph = Graph.copy(graph');
 			val openList = Pqueue.insert( Pqueue.empty, 0,start );
-			fun getParent pos = case (Graph.at graph) pos of (SOME (Graph.Node(_, _, (_,_,_, parent )))) => parent
-			fun pathfind'  ([]) = raise Fail "Path not found"
+
+			(*
+				pathfind' openList
+				TYPE: int * (int * int) -> (int * int) Pqueue.binoTree list option
+				PRE: start(aStar) and goal(aStar) have to be valid coordinates in graph(in aStar).
+				POST: SOME modified openList(see documentation) if there is a shortest path from start(aStar) to goal(aStar). NONE, otherwise.
+				VARIANT: length of openList
+				SIDE-EFFECTS: ??
+			*)
+			fun pathfind'  ([]) = NONE
 			|	pathfind' ( openList ) =
 				let
 					val ((currentF, currentNode), openList ) = Pqueue.extractMin( openList );
+
+					(*
+						calculateG (pos, adjPos)
+						TYPE: (int * int) * (int * int) -> int
+						PRE: pos has to be a valid coordinate in graph(in aStar)
+						POST: the g value(see documentation) of adjPos in graph(aStar).
+					*)
 					fun calculateG ((x, y), (adjX, adjY)) = case ((Graph.at graph) (x, y)) of (SOME (Graph.Node(_, _, (_, g, _, _)))) => if (Int.abs(x - adjX) + Int.abs(y - adjY)) = 2 then g+14 else g+10
+
+					(*
+						calculateH (pos, goal)
+						TYPE: (int * int) * (int * int) -> int
+						PRE: true
+						POST: the h value(see documentation) of pos.
+					*)
 					(* Manhattan distance heuristics *)
 					fun calculateH((x,y), (ex, ey)) = 10*(Int.abs(x - ex) + Int.abs(y - ey))
 					(* Diagonal heuristics *)
@@ -39,8 +60,23 @@ struct
 								14*xDist + 10*(yDist-xDist)
 						end*)
 
+					(*
+						getF pos
+						TYPE: (int * int) -> int
+						PRE: pos has to be a valid coordinate in graph(in aStar).
+						POST: the h value(g+h) of pos in graph(aStar).
+					*)
 					fun getF pos = case (Graph.at graph) pos of (SOME (Graph.Node(_, _, (_,g,h, _ )))) => g+h
 
+					(*
+						processAdjacent adjPos
+						TYPE: (int * int) -> int
+						PRE: adjPos has to be a valid coordinate in graph(in aStar).
+						POST: 0 if the color of adjPos in graph(aStar) is Black, or if the g value of adjPos in graph is bigger than or equal
+							  the new g value(see documentation) of currentNode(in pathfind'). 1 if the color of adjPos in graph is White and 2 otherwise.
+						SIDE-EFFECTS: adjPos in graph is updated with a new color, g value, h value and parent if the color of adjPos in graph is White or
+									  Gray(and the g value of adjPos in graph is lower than the new g value of currentNode).
+					*)
 					fun processAdjacent adjPos =
 						let
 							val (adjl, adjC,adjG,adjH,adjParent) = case (Graph.at graph) adjPos of (SOME (Graph.Node(_, adjl, (c,g,h, parent )))) => (adjl, c,g,h,parent)
@@ -61,7 +97,7 @@ struct
 
 					val (_, adjList) = case ((Graph.at graph) currentNode) of (SOME (Graph.Node(tXY, tadjList, (_, g, h, parent)))) => ((Graph.update graph) (currentNode, (SOME (Graph.Node(tXY, tadjList, (Black, g, h, parent))))),tadjList)
 				in
-					if currentNode = goal then () else
+					if currentNode = goal then SOME openList else
 					pathfind' (foldr(fn (adjPos, xs) => case processAdjacent adjPos of
 						(0) => xs
 						| (1) => Pqueue.insert(xs, getF adjPos, adjPos)
@@ -69,14 +105,22 @@ struct
 						 ) openList adjList)
 				end
 
+			(*
+				rewind pos
+				TYPE: (int * int) -> (int * int) list
+				PRE: There must exist at least one valid shortest path from start(in aStar) to goal(aStar) in graph(aStar).
+					 pos has to be the same coordinate as goal(in aStar) when calling rewind.
+				POST: A list containing all the coordinates in a shortest path from start to goal in graph.
+				VARIANT: pos = start
+			*)
 			fun rewind (pos) =
 				let
-					val parent = getParent pos;
+					val parent = case (Graph.at graph) pos of (SOME (Graph.Node(_, _, (_,_,_, parent )))) => parent
 				in
 					if pos = start then [] else pos::rewind parent
 				end
 		in
-			(pathfind' openList; rev (rewind goal))
+			if isSome(pathfind' openList) then SOME (rev (rewind goal)) else NONE
 		end;
 
 	(*
@@ -100,11 +144,11 @@ struct
 
 	(*
 		dijkstra (graph, start, goal)
-		TYPE: int option Graph.graph * (int * int) * (int * int) -> (int * int) list
+		TYPE: int option Graph.graph * (int * int) * (int * int) -> (int * int) list option
 		PRE: Both start and goal have to be valid coordinates in graph.
-		POST: list containing coordinates(in the form of (x,y)) with a shortest path from start to goal in graph.
+		POST: SOME list containing coordinates(in the form of (x,y)) with a shortest path from start to goal in graph. NONE, otherwise.
 		SIDE-EFFECTS: ??
-		EXCEPTIONS: Fail raised if there is no path from start to goal in graph. Subscript raised if either start or goal's not a valid coordinate in graph.
+		EXCEPTIONS: Subscript raised if either start or goal's not a valid coordinate in graph.
 	*)
 	fun dijkstra ( graph', start : (int * int), goal) =
 	let
@@ -112,12 +156,32 @@ struct
 		val openList = Queue.enqueue (Queue.empty, start)
 		val _ = case (Graph.at graph) start of (SOME (Graph.Node(_, adjList, _))) => (Graph.update graph) (start, SOME (Graph.Node((start, adjList, SOME 0))))
 
-
+		(*
+			dijkstra' openList
+			TYPE: (int * int) queue -> (int * int) queue option
+			PRE: start(dijkstra) and goal(dijkstra) have to be valid coordinates in graph(in dijkstra).
+			POST: SOME modified openList(see documentation) if there is a shortest path from start(dijkstra) to goal(dijkstra). NONE, otherwise.
+			SIDE-EFFECTS: ??
+			VARIANT: length of openList
+		*)
 		fun	dijkstra' openList =
+			if Queue.isEmpty openList then NONE else
 			let
 				val (currentNode as (currentX, currentY), openList) = if Queue.isEmpty openList then raise Fail "Path not found" else (Queue.head(openList), Queue.dequeue(openList))
 				val value = case (Graph.at graph) currentNode of (SOME (Graph.Node(_, _, SOME value))) => value
 
+				(*
+					processAdjacent (adjPos, openList)
+					TYPE: (int * int ) * int option list -> int option list
+					PRE: adjPos has to be a valid coordinate in graph(in dijkstra).
+					POST: openList with adjPos added to its tail(enqueued) if the value(see documentation) of adjPos in graph(dijkstra) is NONE; openList otherwise.
+					SIDE-EFFECTS: If the value(see documentation) of adjPos in graph is NONE then it's updated to the value of currentNode(dijkstra') + 10 if
+					              adjPos is adjacent in a horizontal or vertical position to currentNode. Otherwise, adjPos must be adjacent in a diagonal position to
+					              currentNode and is updated with the value of currentNode + 14. adjPos' value in graph is also updated in the case that
+					              SOME value already exists in that position and said value is lower than the new value(see documentation) of currentNode(in dijkstra').
+					EXCEPTIONS: Fail raised if there is no path from start to goal in graph.
+					VARIANT: length of openList
+				*)
 				fun processAdjacent(adjPos as (adjX, adjY), openList) =
 					let
 						val (adjV, adjAL) = case (Graph.at graph) adjPos of (SOME (Graph.Node(_, adjAL, adjV))) => (adjV, adjAL)
@@ -134,14 +198,29 @@ struct
 
 				val adjList = case (Graph.at graph) currentNode of (SOME (Graph.Node(_, adjList, _))) => adjList
 			in
-				if currentNode = goal then openList else
+				if currentNode = goal then SOME openList else
 				dijkstra' (foldr processAdjacent openList adjList)
 			end
 
+		(*
+			rewind pos
+			TYPE: (int * int) -> (int * int) list
+			PRE: There must exist at least one valid shortest path from start(in dijkstra) to goal(dijkstra) in graph(dijkstra).
+				pos has to be the same coordinate as goal when calling rewind.
+			POST: A list containing all the coordinates in a shortest path from start to goal in graph.
+			VARIANT: value = 0
+		*)
 		fun rewind pos =
 			let
 				val (value, adjPos, adjList) = case (Graph.at graph) pos of (SOME (Graph.Node(_, adjPos::adjList, SOME value))) => (value, adjPos, adjList)
 
+				(*
+					compareV pos1 pos2
+					TYPE: (int * int) * (int * int) -> (int * int)
+					PRE: both pos1 and pos2 have to be valid coordinates in graph(in dijkstra).
+					POST: The coordinate(pos1 or pos2) with the lowest value(see dijkstra) in graph.
+						   pos1 if value of pos1 is lower than value of pos2 in graph; pos2 otherwise.
+				*)
 				fun compareV ((x, y), (x2,y2) ) = case ((Graph.at graph) (x, y), (Graph.at graph) (x2, y2)) of
 												  ((SOME (Graph.Node(_, _, SOME val1))), (SOME (Graph.Node(_, _, SOME val2)))) => if val1 < val2 then (x,y) else (x2,y2)
 												  | ((SOME (Graph.Node(_, _, NONE))), (SOME (Graph.Node(_, _, val2)))) => (x2, y2)
@@ -151,7 +230,7 @@ struct
 				if value = 0 then [] else pos::rewind( (foldr compareV adjPos adjList))
 			end
 	in
-		(dijkstra'(openList); rev (rewind goal))
+		if isSome(dijkstra'(openList)) then SOME (rev (rewind goal)) else NONE
 	end
 
 end

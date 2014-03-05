@@ -4,7 +4,7 @@ use "pathfinder.sml";
 use "tilegrid.sml";
 
 fun repeat( f, arg, 1 ) = f(arg)
-|	repeat( f, arg, n ) = 
+|	repeat( f, arg, n ) =
 		( f(arg) ; repeat(f,arg,n-1) )
 
 (* Simple *
@@ -30,6 +30,7 @@ val graph = Pathfinder.aStarGraph grid;
 
 val timer = Timer.startRealTimer();
 val astar_shortestPath = repeat( Pathfinder.aStar, (graph, start, goal), runPathFind );
+val astar_shortestPath = valOf astar_shortestPath
 val astar_time = Timer.checkRealTimer(timer);
 
 (*Pretty.printPath(Grid.toArray2 grid, start, goal, astar_shortestPath); *)
@@ -40,6 +41,7 @@ val graph = Pathfinder.dijkstraGraph grid;
 
 val timer = Timer.startRealTimer();
 val dijkstra_shortestPath = repeat( Pathfinder.dijkstra, (graph, start, goal), runPathFind );
+val dijkstra_shortestPath = valOf dijkstra_shortestPath
 val dijkstra_time = Timer.checkRealTimer(timer);
 
 (*Pretty.printPath(Grid.toArray2 grid, start, goal, dijkstra_shortestPath);*)
