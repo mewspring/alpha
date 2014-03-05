@@ -189,11 +189,30 @@ average case.
 \subsubsection{Heuristics}
 \label{Heuristics}
 
+The importance of using a good heuristic function for the A* algorithm should
+not be understated. If the heuristic function overestimates the cost \textit{H}
+to traverse from a node \textit{C} to the end node \textit{E} the A* algorithm
+may fail to locate the shortest path. For these cases we call the heuristic
+function inadmissible \cite{astar2}. On the other hand, if the heuristic
+function underestimates \textit{H} many unneccesary nodes will be processed by
+the A* algorithm, which gives it a runtime complexity similar to that of the
+Dijkstra algorithm. The \textit{H} cost is further described in section
+\ref{Edge costs}.
+
 \textit{Heuristics using Manhattan distance}
 
-If the pathfinding algorithm overestimates the distance H it may fail to find
-the shortest path. For these cases we call the heuristics inadmissible.
-\cite{astar2}
+For two-dimensional grids the most straightforward measurement of the heuristic
+\textit{H} cost is the Manhattan distance \cite{manhattan}. Think of it as the
+distance traveled by a taxicab in Manhattan, where it has to follow horizontal
+and vertical streets to reach its destination and isn't allowed to travel
+diagonally.
+
+Heuristic functions based on the Manhattan distance works great if units are
+only allowed to move horizontally and vertically. Manhattan distance heuristics
+may overestimate the \textit{H} costs if units are allowed to move diagonally as
+well. As stated above this can result in suboptimal paths since the heuristic
+function is inadmissible. To resolve this issue, lets take a look at diagonal
+heuristics.
 
 \textit{Diagonal heuristics}
 
@@ -223,7 +242,8 @@ since there is one diagonal and three horizontal steps from 's' to 'g'.
 
 % F, G, H costs.
 
-\subsubsection{Edges costs}
+\subsubsection{Edge costs}
+\label{Edge costs}
 
 In order to prioritize the processing of nodes the A* algorithm keeps track of
 three different cost values for each node in the graph, namely \textit{F},
