@@ -109,6 +109,23 @@ struct
 				else
 					let
 						val ((_, node as (Graph.Node(pos as (x, y), adjacent, (color, G, H, ppos)))), ol) = Pqueue.extractMin(ol)
+
+						(*
+							markVisit ()
+							TYPE: unit -> unit
+							PRE: true
+							POST: none
+							SIDE-EFFECTS: marks the current node as visited by updating
+							              its color to Black in the graph.
+						*)
+						fun markVisit () =
+							let
+								val (SOME (Graph.Node(pos, adjacent, (_, G, H, ppos)))) = (Graph.at graph') pos
+							in
+								(Graph.update graph') (pos, SOME (Graph.Node(pos, adjacent, (Black, G, H, ppos))))
+							end
+
+						val _ = markVisit()
 						val _ = incrementProcessedNodes();
 
 						(*
@@ -225,21 +242,6 @@ struct
 						  | processAdjacent (ol, apos::adjacent) =
 							processAdjacent(process(ol, valOf ((Graph.at graph') apos)), adjacent)
 
-						(*
-							markVisit ()
-							TYPE: unit -> unit
-							PRE: true
-							POST: none
-							SIDE-EFFECTS: marks the current node as visited by updating
-							              its color to Black in the graph.
-						*)
-						fun markVisit () =
-							let
-								val (SOME (Graph.Node(pos, adjacent, (_, G, H, ppos)))) = (Graph.at graph') pos
-							in
-								(Graph.update graph') (pos, SOME (Graph.Node(pos, adjacent, (Black, G, H, ppos))))
-							end
-
 					in
 						if pos = epos then
 							(* A path has been found. Backtrack to the end node to the
@@ -247,7 +249,7 @@ struct
 							   backtracking the list will be in reverse order. *)
 							SOME (rev (backtrack node))
 						else
-							(markVisit(); find' (processAdjacent (ol, adjacent)))
+							find' (processAdjacent (ol, adjacent))
 					end
 		in
 			find' openList
