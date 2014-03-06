@@ -1,0 +1,42 @@
+19/2 
+Träffades, snackade om idéer och brainstormade. 
+
+
+20/2 
+Skapade en grid-datatyp med listor. 
+
+23/2 
+Bakade in processing för närliggande noder i grid-datatypen.
+
+24/2
+Skapade om grid-datatypen med Array2 och jämförde kod med varandra.  
+
+25/2 
+Generell research på sökalgoritmer och olika implementeringar av priority queues. Började skriva lite kod för a* med en openList list-implementation. 
+
+26/2 
+Skrev klart a* med manhattan heuristic som senare visade sig ha en liten bug. 
+
+27/2 
+Började skriva kod för dijkstra som visade sig inte fungerade helt rätt. 
+
+
+28/2 
+Diskuterade med gruppen om vad vi gjort dom senaste dagarna och vad vi skulle göra härnäst. Skrev om delar på dijkstra för att fixa den.
+
+1/3 
+Strukturerade om en del kod och skrev en del specifikationer. Läste på mer om heuristics och implementerade en diagonal heuristic. 
+
+2/3 
+Lite mer code-clean up och annat. Fixade någar små buggar med use och koordinaterna efter att vi strukturerade om delar av koden. 
+
+
+3/3 
+Pratade med Peter och diskuterade hur vi skulle lägga upp rapporten. Skrev klart specifikationerna för alla pathfinding-funktioner och ändrade en del identifier/funktionsnamn/struktur. 
+
+4/3 Påbörjade rapportskrivandet och började på dijkstra-delen. Fixade lite mer med koden för pathfinding. 
+
+5/3 Skrev klart dijkstra-delen i rapporten och implementerade Vector2 för att ersätta Array2. Skrev om delar av pathfinding, grid, graph, och pretty-funktionerna för att få dom 
+att bli kompatibla med Vector2. Ändrade om i en del specifikationer.   
+
+6/3 En hel del testande och en del rapportskrivande. Skrev user manual och försökte fixa last second buggar med diagonalla förflyttelser med a*. 
