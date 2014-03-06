@@ -359,7 +359,71 @@ To summarize:
 \label{Tracking node visits}
 
 It is important to keep track of visited nodes so that no node is processed more
-than once.
+than once. For this reason the A* algorithm conceptually uses two lists to track
+nodes. The first one is called the open list and it tracks all nodes which are
+scheduled for processing, it is normally implemented as a priorty queue. The
+second one is called the closed list and it tracks all nodes that have already
+been processed. The actual implementation of the open and the closed list may
+vary between various A* algorithms, so lets focus on their task and useage from
+a birds view.
+
+The open list can be thought of as a priorty queue where nodes with low
+\textit{F} costs have higher priorty. This property is the main reason why the
+A* algorithm is able to only process a subset of the graph's nodes while still
+arriving at a shortest path.
+
+To recap, the \textit{F} cost of a node \textit{C} is the sum of its \textit{G}
+value (the actual cost to traverse the edges along its parents to the start
+node) and its \textit{H} value (the heuristically estimated cost of traversing
+from \textit{C} to the end node \textit{E}). An admissible heuristic always
+locates the shortest path since it prioritizes nodes to process based on their
+\textit{F} cost, which is equal to the actual cost to get to the node \textit{C}
+plus the lowest possible cost to get from \textit{C} to \textit{E}, since that
+is the definition of an inadmissible heuristic function with regards to the A*
+algorithm, i.e. it doesn't overestimate the \textit{H} cost.
+
+\subsubsection{Algorithm description}
+
+The A* algorithm is initiated by adding the start node \textit{S} to the open
+list for future processing. After this step it will recursively perform a series
+of operations until the end node \textit{E} has been located or the open list is
+empty, in which case no path exists from \textit{S} to \textit{E}.
+
+The operations performed are as follows. A node \textit{C} is dequeued from the
+priority queue, i.e. the open list. This node has the lowest \textit{F} cost of
+all nodes in the open list and it is therefore considered most likely to be part
+of the shortest path between \textit{S} and \textit{E}.
+
+To prevent future duplicate processing of the \textit{C} node it is added to the
+closed list and only lists which are not present in the closed list are
+processed in these recursive operations. In our case we use colors to mark the
+nodes belong to the closed list. A \textit{white} color indicates that a node
+has not yet been processed, a \textit{gray} color indicates that the node is
+present in the open list and a \textit{black} color indicates that the node has
+been processed and is part of the closed list. Note that this is merely an
+implementation detail and it doesn't have any semantic effect on the algorithm.
+
+All unprocessed adjacent nodes of \textit{C} are added to the open list for
+future processing, along with their corresponding \textit{F} costs and the
+coordinate of their parent node which in this case is \textit{C}. If any of the
+adjacent nodes is already present in the open list and the cost of walking from
+\textit{S} through \textit{C} to the node is shorter than their current parent,
+then the coordinates of the parent is updated to correspond to the \textit{C}
+node and the node's \textit{G} and \textit{F} values are updated accordingly.
+Since the open list is a priorty queue they will be sorted according to their
+\textit{F} cost.
+
+As mentioned above this set of operations are performed recursively until one of
+two conditions is met; either \textit{C} is equal to the end node \textit{E} in
+which case a path from \textit{S} to \textit{E} has been located (and while
+using admissible heuristics this will be the shortest path), or the open list is
+empty in which case no valid path exists from \textit{S} to \textit{E}.
+
+Last but not least, if a path has been located the A* algorithm traverses back
+from the end node \textit{E} to the start node \textit{S} and records the
+coordinates of each node's parent. By reversing this list of coordinates every
+step in the path from the start node \textit{S} to the end node \textit{E} is
+given.
 
 % Time complexity.
 
