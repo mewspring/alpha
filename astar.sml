@@ -3,6 +3,7 @@ use "pqueue.sml";
 
 structure AStar =
 struct
+	(* TODO: write datatype specification. *)
 	datatype color = White | Gray | Black;
 
 	(*
@@ -37,7 +38,7 @@ struct
 			val start = (Graph.at graph') spos
 
 			(*
-				h (x, y)
+				manhattan (x, y)
 				TYPE: int * int -> int
 				PRE: (x, y) is a valid coordinate of the graph.
 				POST: the estimated distance from the provided (x, y) coordinate to
@@ -45,7 +46,35 @@ struct
 				      heuristic measurement.
 				      [1]: http://mathworld.wolfram.com/TaxicabMetric.html
 			*)
-			fun h (x, y) = Int.abs(ex - x) + Int.abs(ey - y)
+			fun manhattan (x, y) = Int.abs(ex - x) + Int.abs(ey - y)
+
+			(*
+				diagonal (x, y)
+				TYPE: int * int -> int
+				PRE: (x, y) is a valid coordinate of the graph.
+				POST: the estimated distance from the provided (x, y) coordinate to
+				      the end node at epos, using a hybrid between Manhattan
+				      distance [1] and "as the crow flies" as a heuristic
+				      measurement.
+				      [1]: http://mathworld.wolfram.com/TaxicabMetric.html
+			*)
+			fun diagonal (x, y) =
+				let
+					val dx = Int.abs(ex - x)
+					val dy = Int.abs(ey - y)
+					val d = Int.min(dx, dy)
+				in
+				(* To avoid having to calculate the sqrt(2) and working with reals
+				   we are using 10 as the edge cost of a vertical and horizontal
+				   steps and 14 as the edge cost of diagonal steps. The edge cost is
+				   derived from: floor(sqrt(1+1)*10) = 14.
+				*)
+					14*d + 10*(dx+dy-d)
+				end
+
+			(* h is the heuristic function which calculates the H cost based on a
+			   given coordinate. *)
+			val h = diagonal
 
 			(* Insert the start node. *)
 			val openList = Pqueue.insert(Pqueue.empty, 0 + h spos, valOf start)
