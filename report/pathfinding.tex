@@ -81,6 +81,21 @@ another, which may vary depending on the terrain of the edge and other factors.
 % First multiple paths, or find the shortest path to any of a number of end nodes.
 % ...
 
+A somewhat unintuitive but very interesting use case of pathfinding algorithms
+with custom edge costs \ref{Edge costs} between nodes is the imitation of
+artificial intelligence. Lets say for instance that we create a game in which
+there exists rogue characters or thiefs which should use stealth and lurk in the
+shadows, forests and dark regions of the map. It is possible to enforce this
+behavior by manipulating the edge costs of the node graph in particular ways. To
+facilitate the behavior of seeking out shadows instead of open spaces we could
+use low edge costs for nodes in shaded parts of the map and use high edge costs
+for nodes in open spaces. Without building a specific artifical intelligence for
+these rouge entities they would still behave as though they plan their movement
+intelligently. And this is just one of many similar cases where one could
+control the behavior by manipulating the edge values. Other examples may include
+horses which seeks to stay on well traveled roads or wild animals which shy away
+from civilization.
+
 % Other applications of edge costs.
 %    Shortest path, best path, stealth units.
 
