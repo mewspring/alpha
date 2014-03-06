@@ -3,6 +3,10 @@ use "pqueue.sml";
 
 structure AStar =
 struct
+	val processedNodes = ref 0;
+	fun resetProcessedNodes() = processedNodes := 0
+	fun incrementProcessedNodes() = processedNodes := !processedNodes + 1
+
 	(*
 		DATATYPE REPRESENTATION:
 			Colors are used to track the state of a node in a graph. White
@@ -63,7 +67,7 @@ struct
 		   steps and 14 as the edge cost of diagonal steps. The edge cost is
 		   derived from: floor(sqrt(1+1)*10) = 14.
 		*)
-			14*d + 10*(dx+dy-d)
+			14*d + 10*Int.abs(dx-dy)
 		end
 
 
@@ -78,6 +82,7 @@ struct
 	*)
 	fun find h (graph, spos as (sx, sy), epos as (ex, ey)) =
 		let
+			val _ = resetProcessedNodes();
 			val graph' = Graph.copy graph
 			val start = (Graph.at graph') spos
 			val h' = h epos
@@ -104,6 +109,7 @@ struct
 				else
 					let
 						val ((_, node as (Graph.Node(pos as (x, y), adjacent, (color, G, H, ppos)))), ol) = Pqueue.extractMin(ol)
+						val _ = incrementProcessedNodes();
 
 						(*
 							edgeCost apos as (ax, ay)
@@ -155,8 +161,8 @@ struct
 							in
 								if aColor = White then
 									let
-										val aH = h' apos
 										(* pos is the coordinate of the parent node. *)
+										val aH = h' apos
 										val adata = (Gray, newG, aH, pos)
 										val aF = newG + aH
 										val newAnode = Graph.Node(apos, aAdjacent, adata)
@@ -170,8 +176,6 @@ struct
 									end
 								else if aColor = Gray andalso newG < aG then
 									let
-										(* TODO: Remove this line. It shouldn't be required to recalculate the H cost.  *)
-										val aH = h' apos
 										(* pos is the coordinate of the parent node. *)
 										val adata = (aColor, newG, aH, pos)
 										val aF = newG + aH

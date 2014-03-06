@@ -13,7 +13,7 @@ val grid = Grid.make ( tilegrid, "demo/walk.txt");
 * Simple *)
 
 (* Benchmark *)
-val scale = 10; (* Number of times to scale the map *)
+val scale = 1; (* Number of times to scale the map *)
 val runPathFind = 1; (* Number of times to run the pathfinder *)
 val tilegrid = TileGrid.make( "demo/myTerrainData.txt" );
 val width = 80;
@@ -29,11 +29,13 @@ print("=== [ Example 1 - A* ] ===\n");
 val graph = AStar.makeGraph grid;
 
 val timer = Timer.startRealTimer();
-val astar_shortestPath = repeat( (AStar.find AStar.diagonal), (graph, start, goal), runPathFind );
-val astar_shortestPath = valOf astar_shortestPath
-val astar_time = Timer.checkRealTimer(timer);
+val shortestPath = repeat( (AStar.find AStar.diagonal), (graph, start, goal), runPathFind );
+val shortestPath = valOf shortestPath
+val processed = !AStar.processedNodes;
+val time = Timer.checkRealTimer(timer);
 
 print("=== Results ] ====");
-
-print ("A* took "^(Time.toString(astar_time))^" seconds\n");
-print ("Path length "^(Int.toString (List.length(astar_shortestPath)))^"\n");
+Pretty.printPath(Grid.toArray2 grid, start, goal, shortestPath); 
+print ("A* took "^(Time.toString(time))^" seconds\n");
+print ("A* processed "^(Int.toString(processed))^" nodes\n");
+print ("Path length "^(Int.toString (List.length(shortestPath)))^"\n");

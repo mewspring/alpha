@@ -12,6 +12,8 @@ val goal = (2, 12);
 
 val graph = Dijkstra.makeGraph grid;
 val shortestPath = Dijkstra.find(graph, start, goal);
+val processed = !AStar.processedNodes;
 
 print("\n=== [ Dijkstra ] ===\n");
 Pretty.printPath (Grid.toArray2 grid, start, goal, valOf shortestPath);
+print ("Dijkstra processed "^(Int.toString(processed))^" nodes\n");

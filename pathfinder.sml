@@ -5,6 +5,9 @@ use "queue.sml";
 
 structure Pathfinder =
 struct
+	val processedNodes = ref 0;
+	fun resetProcessedNodes() = processedNodes := 0
+	fun incrementProcessedNodes() = processedNodes := !processedNodes + 1
 	(*
 		DATATYPE REPRESENTATION:
 			Colors are used to track the state of a node in a graph. White
@@ -26,6 +29,7 @@ struct
 	*)
 	fun aStar ( graph', start : (int * int), goal)  =
 		let
+			val _ = resetProcessedNodes();
 			val graph = Graph.copy(graph');
 			val openList = Pqueue.insert( Pqueue.empty, 0,start );
 
@@ -40,6 +44,7 @@ struct
 			|	pathfind' ( openList ) =
 				let
 					val ((currentF, currentNode), openList ) = Pqueue.extractMin( openList );
+					val _ = incrementProcessedNodes();
 
 					(*
 						calculateG (pos, adjPos)
@@ -158,6 +163,7 @@ struct
 	*)
 	fun dijkstra ( graph', start : (int * int), goal) =
 	let
+		val _ = resetProcessedNodes();
 		val graph = Graph.copy(graph');
 		val openList = Queue.enqueue (Queue.empty, start)
 		val _ = case (Graph.at graph) start of (SOME (Graph.Node(_, adjList, _))) => (Graph.update graph) (start, SOME (Graph.Node((start, adjList, SOME 0))))
@@ -173,6 +179,7 @@ struct
 			if Queue.isEmpty openList then NONE else
 			let
 				val (currentNode as (currentX, currentY), openList) = (Queue.head(openList), Queue.dequeue(openList))
+				val _ = incrementProcessedNodes();
 				val value = case (Graph.at graph) currentNode of (SOME (Graph.Node(_, _, SOME value))) => value
 
 				(*
