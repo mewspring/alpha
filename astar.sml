@@ -234,7 +234,11 @@ struct
 							              its color to Black in the graph.
 						*)
 						fun markVisit () =
-							(Graph.update graph') (pos, SOME (Graph.Node(pos, adjacent, (Black, G, H, ppos))))
+							let
+								val (SOME (Graph.Node(pos, adjacent, (_, G, H, ppos)))) = (Graph.at graph') pos
+							in
+								(Graph.update graph') (pos, SOME (Graph.Node(pos, adjacent, (Black, G, H, ppos))))
+							end
 
 					in
 						if pos = epos then
