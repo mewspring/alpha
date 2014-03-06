@@ -5,7 +5,7 @@ use "tilegrid.sml";
 
 fun repeat( f, arg, 1 ) = f(arg)
 |	repeat( f, arg, n ) =
-		( f(arg) ; repeat(f,arg,n-1) )
+( f(arg) ; repeat(f,arg,n-1) )
 
 (* Simple *
 val tilegrid = TileGrid.merge( TileGrid.make( "demo/floor.txt"),TileGrid.make( "demo/objects.txt") );
@@ -13,7 +13,7 @@ val grid = Grid.make ( tilegrid, "demo/walk.txt");
 * Simple *)
 
 (* Benchmark *)
-val scale = 10; (* Number of times to scale the map *)
+val scale = 2; (* Number of times to scale the map *)
 val runPathFind = 1; (* Number of times to run the pathfinder *)
 val tilegrid = TileGrid.make( "demo/myTerrainData.txt" );
 val width = 80;
@@ -33,7 +33,7 @@ val astar_shortestPath = repeat( Pathfinder.aStar, (graph, start, goal), runPath
 val astar_shortestPath = valOf astar_shortestPath
 val astar_time = Timer.checkRealTimer(timer);
 
-(*Pretty.printPath(Grid.toArray2 grid, start, goal, astar_shortestPath); *)
+(*Pretty.printPath(Grid.toVector2 grid, start, goal, astar_shortestPath); *)
 
 print("=== [ Example 2 - Dijkstra ] ====");
 
@@ -44,7 +44,7 @@ val dijkstra_shortestPath = repeat( Pathfinder.dijkstra, (graph, start, goal), r
 val dijkstra_shortestPath = valOf dijkstra_shortestPath
 val dijkstra_time = Timer.checkRealTimer(timer);
 
-(*Pretty.printPath(Grid.toArray2 grid, start, goal, dijkstra_shortestPath);*)
+(*Pretty.printPath(Grid.toVector2 grid, start, goal, dijkstra_shortestPath);*)
 
 print("=== Results ] ====");
 

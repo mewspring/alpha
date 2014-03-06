@@ -1,28 +1,28 @@
 use "grid.sml";
 use "helpers.sml";
+use "vector2.sml";
 
 structure Pretty =
 struct
 	(*
 		printGrid grid
-		TYPE: bool Array2.array -> unit
+		TYPE: bool Vector2.vector -> unit
 		PRE: true
 		POST: none
 		SIDE-EFFECTS: pretty prints the grid to standard output.
 	*)
 	fun printGrid grid =
 		let
-			val region = {base=grid, row=0, col=0, nrows=NONE, ncols=NONE}
 			fun f (y, x, a) =
 				(if a then print(".") else print("#");
-				if x = Array2.nCols grid - 1 then print("\n") else ())
+				if x = Vector2.nCols grid - 1 then print("\n") else ())
 		in
-			Array2.appi Array2.RowMajor f region
+			Vector2.appi f grid
 		end;
 
 	(*
 		printPath (grid, start, goal, path)
-		TYPE: bool Array2.array * (int * int)
+		TYPE: bool Vector2.vector * (int * int)
 		PRE: true
 		POST: none
 		SIDE-EFFECTS: pretty prints the path from the start to the goal of the
@@ -30,7 +30,6 @@ struct
 	*)
 	fun printPath (grid, start, goal, path) =
 		let
-			val region = {base=grid, row=0, col=0, nrows=NONE, ncols=NONE}
 			fun f (y, x, a) =
 				(if (x, y) = start then
 					print("S")
@@ -42,11 +41,11 @@ struct
 					print(".")
 				else
 					print("#");
-				if x = Array2.nCols grid - 1 then
+				if x = Vector2.nCols grid - 1 then
 					print("\n")
 				else
 					())
 		in
-			Array2.appi Array2.RowMajor f region
+			Vector2.appi f grid
 		end;
 end;

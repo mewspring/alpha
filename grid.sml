@@ -1,3 +1,4 @@
+ use "vector2.sml";
 use "helpers.sml";
 use "tilegrid.sml";
 
@@ -17,14 +18,14 @@ struct
 		DATATYPE REPRESENTATION:
 		   a grid divides an area into a series of contiguous grid cells using
 		   regular tessellation. The underlying datatype of a grid is a
-		   two-dimensional array of boolean values. Each boolean value represents
+		   two-dimensional vector of boolean values. Each boolean value represents
 		   the property of a cell with regards to if it's walkable or not.
 		DATATYPE CONVENSION:
 		   each cell of a grid is true if walkable, and false otherwise. The width
 		   and height of the grid in number of cells in equivalent to the numer of
-		   cols and rows in the underlying two-dimensional array respectively.
+		   cols and rows in the underlying two-dimensional vector respectively.
 	*)
-	abstype grid = Grid of bool Array2.array
+	abstype grid = Grid of bool Vector2.Vector2
 	with
 		(*
 			make (tilegrid, walkPath)
@@ -32,7 +33,7 @@ struct
 			PRE: The walkPath file contains a comma-separated
 			     list of tileIDs which are walkable; and all other tile IDs are
 			     considiered not walkable.
-			POST: a grid of the same size as tilegrid where each cell of the grid 
+			POST: a grid of the same size as tilegrid where each cell of the grid
 				 is either true (walkable) if that cell had an index in tilegrid that
 				 was specified in file walkPath or false (not walkable) otherwise.
 		*)
@@ -45,11 +46,11 @@ struct
 					PRE: each element in the two-dimensional tilegrid corresponds to a
 					     tile ID and the walkable tile IDs are present in the walkable
 					     list.
-					POST: a two dimensional array where each element is either true
+					POST: a two dimensional vector where each element is either true
 					      (walkable) or false (not walkable).
 				*)
 				fun preprocess (tilegrid, walkable) =
-					Grid (Array2.fromList(List.map (fn row => List.map (fn cell => Helpers.contains(walkable, cell)) row) tilegrid))
+					Grid (Vector2.fromList(List.map (fn row => List.map (fn cell => Helpers.contains(walkable, cell)) row) tilegrid))
 			in
 				preprocess(tilegrid, walkable)
 			end;
@@ -61,7 +62,7 @@ struct
 			POST: returns the width of the grid in number of columns.
 		*)
 		fun width (Grid grid) =
-			Array2.nCols grid;
+			Vector2.nCols grid;
 
 		(*
 			height grid
@@ -70,7 +71,7 @@ struct
 			POST: returns the height of the grid in number of rows.
 		*)
 		fun height (Grid grid) =
-			Array2.nRows grid;
+			Vector2.nRows grid;
 
 		(*
 			canWalk grid (x, y)
@@ -88,9 +89,9 @@ struct
 					POST: true if (x, y) is a valid coordinate of the grid.
 				*)
 				fun isValid (x, y) =
-					x >= 0 andalso x < Array2.nCols(grid) andalso y >= 0 andalso y < Array2.nRows(grid)
+					x >= 0 andalso x < Vector2.nCols(grid) andalso y >= 0 andalso y < Vector2.nRows(grid)
 			in
-				isValid (x, y) andalso Array2.sub(grid, y, x)
+				isValid (x, y) andalso Vector2.sub(grid, y, x)
 			end;
 
 		(*
@@ -119,12 +120,12 @@ struct
 			end;
 
 		(*
-			toArray2 grid
-			TYPE: grid -> bool Array2.array
+			toVector2 grid
+			TYPE: grid -> bool vector vector
 			PRE: true
-			POST: the underlying two-dimensional boolean array of the grid.
+			POST: the underlying two-dimensional boolean vector of the grid.
 		*)
-		fun toArray2 (Grid grid) =
+		fun toVector2 (Grid grid) =
 			grid;
 	end;
 end;

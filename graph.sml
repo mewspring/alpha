@@ -1,4 +1,5 @@
 use "grid.sml";
+use "vector2.sml";
 
 structure Graph =
 struct
@@ -23,13 +24,14 @@ struct
 		      adjacent nodes and node data, or NONE if the specified coordinate
 		      isn't walkable.
 	*)
+
 	fun getNode grid ((x, y), data) =
 		if Grid.canWalk grid (x, y) then
 			SOME (Node((x, y), Grid.getAdjacent grid (x, y), data))
 		else
 			NONE;
 
-	abstype 'a graph = Graph of 'a node option Array2.array
+	abstype 'a graph = Graph of 'a node option Vector2.Vector2
 	with
 		(*
 			make (grid, data)
@@ -42,10 +44,9 @@ struct
 		 *)
 		fun make (grid, data) =
 			let
-				val graph = Array2.array(Grid.height grid, Grid.width grid, NONE)
+				val graph = Vector2.vector(Grid.height grid, Grid.width grid, NONE)
 				fun f (y, x, _) = getNode grid ((x, y), data)
-				val range = {base = graph, row = 0, col = 0, nrows = NONE, ncols = NONE}
-				val _ = Array2.modifyi Array2.RowMajor f range
+				val graph = Vector2.modifyi f graph
 			in
 				Graph graph
 			end;
@@ -56,7 +57,7 @@ struct
 			PRE: (x, y) is a valid coordinate of the graph.
 			POST: the graph node located at the coordinate (x, y).
 		*)
-		fun at (Graph graph) (x, y) = Array2.sub(graph, y, x);
+		fun at (Graph graph) (x, y) = Vector2.sub(graph, y, x);
 
 		(*
 			update graph ((x, y), data)
@@ -66,22 +67,6 @@ struct
 			SIDE-EFFECTS: updates the data of the graph node at the provided (x, y)
 			              coordinate.
 		*)
-		fun update (Graph graph) ((x, y), data) = Array2.update(graph, y, x, data);
-
-		(*
-			copy graph
-			TYPE: 'a graph -> 'a graph
-			PRE: true
-			POST: a copy of the graph with a new underlying Array2.array.
-		*)
-		fun copy (Graph graph) =
-			let
-				val copyArray = Array2.array(Array2.nRows(graph), Array2.nCols(graph), NONE)
-				val range = {base = graph, row = 0, col = 0, nrows = NONE, ncols = NONE}
-				val _ = Array2.copy {src=range, dst=copyArray, dst_row=0, dst_col=0}
-			in
-				Graph copyArray
-			end;
-
+		fun update (Graph graph) ((x, y), data) = Graph (Vector2.update(graph, y, x, data));
 	end;
 end;
