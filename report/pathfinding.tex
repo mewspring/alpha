@@ -167,26 +167,45 @@ corners. Obviously this decision may affect the shortest path. \cite{astar2}
 
 % How it works.
 
-Basically a bredth-first...
+Dijkstra's algorithm can basically be seen as variation of a breadth-first search. The algorithm starts off
+on a start node and expands uniformly from it in all (eight in our case) directions until it hits
+the end node. No path is found if all searchable nodes from the start node have been explored and
+the end node still hasn't been found.
 
-Add start node to the open list and give it a cost value.
+To describe this in a more detailed step-by-step fashion, we start off by creating an empty
+open list (represented by a queue(insert ref to slides?) in our implementation).
+This open list will hold all nodes which we come across and that need to be checked out.
+Our next step is to push the start node into the open list and give it a cost value, which
+in our case will be 0. Once that is done, we simply follow these steps:
 
-While open list not empty:
-1) Pop head of the open list.
-2) If current node is the end node, break
-3) Process adjacent nodes.
-	a) If not present in the open list, give a cost value and append to the open
-	list.
-	b) If present, update the cost value if this path is shorter.
+As long as the open list is not empty:
+/begin{enumerate}
+\item Remove the head of the open list(or dequeue if queue). This is now our current node.
+\item Check if the current node is the same as the end node. If it is, then that means we're
+done.
+\item For every adjacent node to the current node, perform these steps:
+a) If the adjacent node is not present in the open list and does not have a value of its own
+i.e., it has not been checked, give it a cost value and append(enqueue) it to the open list.
+This cost value will be equal to the current node's value added with 10 if the adjacent node
+is located either horizontally or vertically from the current node, and 14 if diagonally.
+b) If the adjacent node is present in the open list, then give a tentative value to the
+cost value of the current node, added with the distance to the adjacent node (10 or 14 depending on its location).
+Compare this tentative value to the value of the adjacent node and then assign the smaller of the two values.
+ \item Go back to step 1.
 
-If a path has been located, backtrack to find the steps of the path.
 
-% Backtracking
+/end{enumerate}
+Once we've reached the end node, we start backtracking to find the path. To backtrack, we first
+pick the end node and check all of its adjacent nodes to find the one with the smallest cost value. Once we've
+located the node with the smallest cost, we save its location and repeat the last step. This is repeated until we've arrived
+back on the start node, at which point we've accumulated a list containing the nodes in a shortest path.
+
+While Dijkstra's algorithm will always find a shortest path, assuming one exists, its
+major drawback is performance. Which leads us to the greener pastures of...
+
 
 % Useful to find the shortest path of multiple targets, or targets at unknown
 % coordinates.
-
-% Its major drawback is performace...
 
 % Time complexity.
 % skip?
