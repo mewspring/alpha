@@ -1,6 +1,5 @@
 use "graph.sml";
 use "pqueue.sml";
-(*use "pqueue_list.sml";*)
 use "queue.sml";
 
 structure Pathfinder =
@@ -61,9 +60,9 @@ struct
 						POST: the h value(see documentation) of pos.
 					*)
 					(* Manhattan distance heuristics *)
-					fun calculateH((x,y), (ex, ey)) = 10*(Int.abs(x - ex) + Int.abs(y - ey))
+					(*fun calculateH((x,y), (ex, ey)) = 10*(Int.abs(x - ex) + Int.abs(y - ey))*)
 					(* Diagonal heuristics *)
-					(*fun calculateH((x,y), (ex, ey)) =
+					fun calculateH((x,y), (ex, ey)) =
 						let
 							val xDist = Int.abs(x - ex)
 							val yDist = Int.abs(y - ey)
@@ -72,7 +71,7 @@ struct
 								14*yDist + 10*(xDist-yDist)
 							else
 								14*xDist + 10*(yDist-xDist)
-						end*)
+						end
 
 					(*
 						getF pos
