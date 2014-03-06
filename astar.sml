@@ -41,7 +41,7 @@ struct
 		      Manhattan distance [1] as a heuristic measurement.
 		      [1]: http://mathworld.wolfram.com/TaxicabMetric.html
 	*)
-	fun manhattan (ex, ey) (x, y) = Int.abs(ex - x) + Int.abs(ey - y)
+	fun manhattan (ex, ey) (x, y) = 10*(Int.abs(ex - x) + Int.abs(ey - y))
 
 	(*
 		diagonal (epos as (ex, ey)) (pos as (x, y))
