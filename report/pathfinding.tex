@@ -279,7 +279,10 @@ cost is derived from: $ \floor{10 \sqrt{1+1}} = 14 $.
 To get a feeling for how the diagonal heuristic operates lets take a look at an
 example. Let \textit{S} and \textit{E} in figure \ref{fig:grid} represent the
 start and end nodes respectively. To walk from \textit{S} to \textit{E} the
-shortest path will traverse
+shortest path will traverse one diagonal step and three horizontal steps. There
+are more than one shortest path with the same number of steps, but which of
+these is chosen is an implementation detail that may differ depending on the
+priority queue.
 
 \begin{figure}[htbp]
 	\centering
@@ -291,17 +294,9 @@ shortest path will traverse
 	coordinate (1, 1) and the end node \textit{E} at coordinate (5, 0).}
 \end{figure}
 
-The cost using Manhattan distance between 's' and 'g' is $ 1*10 + 4*10 = 50 $,
-since there is one vertical and four horizontal steps from 's' to 'g'.
-
-Using a hybrid heuristic we could combine a horizontal and a vertical step into
-a diagonal step which would cost 14 instead of 10+10=20. Using this method the
-heuristic could no longer be inadmissible.
-
-The cost using a hybrid heuristic would in this case be $ 1*14 + 3*10 = 44 $,
-since there is one diagonal and three horizontal steps from 's' to 'g'.
-
-\textit{Inadmissible heuristics}
+While this heuristic will lead to the processing of more nodes in average it has
+a major benefit over the pure Manhattan distance heuristic; namely that it's no
+longer inadmissible and will therefore always arrive at the shortest path.
 
 % F, G, H costs.
 
