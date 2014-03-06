@@ -152,12 +152,13 @@ struct
 						fun process (ol, anode as Graph.Node(apos as (ax, ay), aAdjacent, (aColor, aG, aH, _))) =
 							let
 								val newG = G + edgeCost apos
-								val aF = newG + aH
 							in
 								if aColor = White then
 									let
 										(* pos is the coordinate of the parent node. *)
-										val adata = (Gray, newG, h' apos, pos)
+										val aH = h' apos
+										val adata = (Gray, newG, aH, pos)
+										val aF = newG + aH
 										val newAnode = Graph.Node(apos, aAdjacent, adata)
 									in
 										(* A path to anode has been located. Update its
@@ -171,6 +172,7 @@ struct
 									let
 										(* pos is the coordinate of the parent node. *)
 										val adata = (aColor, newG, aH, pos)
+										val aF = newG + aH
 										val newAnode = Graph.Node(apos, aAdjacent, adata)
 									in
 										(* A shorter path to anode has been located.
