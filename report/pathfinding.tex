@@ -106,7 +106,7 @@ A second function \textit{merge} is used to merge two layers of map-data. It tak
 
 \subsubsection{Grid}
 
-A similar datastructure is what we call a \textit{grid}. It's a 2d grid of boolean values where each tile is true if walkable or false for non-walkable. We include a function for generating a grid out of a tilegrid together with a file which contains the values of tiles that should be considered as walkable. This way a user of our program can have multiple files which specify a different set of units that can traverse a different set of tiles of the same map and generate a different grid for each one. In the interface we also have functions for checking if a tile is walkable, getting walkable adjacent tiles of a tile as well as getting the dimensions of a grid. We chose Array2 as the underlying datastructure of the grid because we needed element access in constant time, we could have chosen a Vector but Array2 provides a convenient way of accessing elements using 2d coordinates. 
+A similar datastructure is what we call a \textit{grid}. It's a 2d grid of boolean values where each tile is true if walkable or false for non-walkable. We include a function for generating a grid out of a tilegrid together with a file which contains the values of tiles that should be considered as walkable. This way a user of our program can have multiple files which specify a different set of units that can traverse a different set of tiles of the same map and generate a different grid for each one. In the interface we also have functions for checking if a tile is walkable, getting walkable adjacent tiles of a tile as well as getting the dimensions of a grid. We chose Array2 as the underlying datastructure of the grid because we needed element access in constant time, we could have chosen a Vector but Array2 provides a convenient way of accessing elements using 2d coordinates.
 
 \subsubsection{Graph}
 Our abstract datatype \textit{graph} is what holds the graph of nodes. A node is a walkable tile with edges that connects it to adjacent walkable nodes, it also has a component to hold arbitrary data needed by the pathfinder algorithms. We provide functions to create a graph from a grid, update and get functions for a node provided its coordinates and a copy function to make a new copy of the whole graph. We could have skipped this datatype and have our pathfinders work directly with a grid but we dicided to do this preprocessing and create a node graph so that we could re-use it and do multiple pathfindings without having to calculate adjacent nodes each time. In agreement with our supervisor, we chose Array2 as the underlaying datastructure for the graph because we needed to efficiently update and get data from an element and Array2 does this in constant time with 2d coordinates as input.
@@ -115,7 +115,7 @@ Our abstract datatype \textit{graph} is what holds the graph of nodes. A node is
 We provide two different pathfinders that use different algorithms for finding the shortest path, A* and Dijsktra (see section \ref{Algorithms}). Each one has a function for finding a path as well as creating a graph that includes the extra data needed by the algorithm. Once the graph has been created it can be sent to the function that does the actual pathfinding, along with start and end coordinates, and the path is sent back. In the case when a path can't be found the functions will return NONE. We decided to provide two different algorithms mainly because of interest for how they work but also to test their performance (see section \ref{Analysis}).
 
 \subsubsection{Priority queue}
-The A* algorithm needs to keep a queue with nodes to process and sort them depending on a key value, for this we created a datatype called queue. We provide functions to create an empty queue, insert and update nodes and a function to extract the node with the lowest key. We decided to create two different implementations, one using a binomial heap and one using a list (see section \ref{Priority queues}) to see how they would fair performance wise. 
+The A* algorithm needs to keep a queue with nodes to process and sort them depending on a key value, for this we created a datatype called queue. We provide functions to create an empty queue, insert and update nodes and a function to extract the node with the lowest key. We decided to create two different implementations, one using a binomial heap and one using a list (see section \ref{Priority queues}) to see how they would fair performance wise.
 
 \subsubsection{Pretty}
 Pretty has functions to display a grid, or a grid and the path as return by a pathfinder, in the the form of ascii art in the standard output.
@@ -199,10 +199,10 @@ If a path has been located, backtrack to find the steps of the path.
 
 The main idea behind the A* algorithm is to use a heuristic function which makes
 an educated guess about the distance of a node to the end node. Using this
-information it is able prioritize the processing of nodes which are more likely
-to bring you closer to the end node. This reduces the number of nodes which have
-to be processed in average and therefore decreases the total runtime of the
-average case.
+information it is able to prioritize the processing of nodes which are more
+likely to bring you closer to the end node. This reduces the number of nodes
+which have to be processed in average and therefore decreases the total runtime
+of the average case.
 
 % ~~~ [ Heuristics ] ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -236,12 +236,24 @@ heuristics.
 
 \textit{Diagonal heuristics}
 
-Instead of using pure Manhattan distance for the \textit{H} cost we could use a
-hybrid between the Manhattan distance and ''as the crow flies''.
+A diagonal heuristic uses a hybrid of the Manhattan distance and ''as the crow
+flies'' to calculate the \textit{H} cost. If a unit located at the coordinate
+(x, y) is trying to reach the end node \textit{E} at coordinate (ex, ey), where
+$ x \ne ex \land y \ne ey $ it's safe to assume that diagonal steps may result
+in a shorter path in terms of number of steps. For the sake of argument let the
+distance of a vertical and horizontal step be one unit and the distance of a
+diagonal step be $ \sqrt{2} $ units. We could use this property as our edge cost
+\ref{Edge costs} for the A* algorithm. Since the heuristic function will be
+executed once for every processed node its performance becomes critical. To
+avoid having to calculate the square root of 2 and working with reals we are
+using 10 as the edge cost (see section \ref{Edge costs}) of a vertical and
+horizontal steps and 14 as the edge cost of diagonal steps. The diagonal edge
+cost is derived from: $ \floor{10 \sqrt{1+1}} = 14 $.
 
-\textit{Example:} Let \textit{S} and \textit{E} represent the start and end
-locations respectively. Let the cost of a horizontal or vertical step be 10 and
-the cost of a diagonal step be 14 ($ \floor{10 \sqrt{2}} $).
+To get a feeling for how the diagonal heuristic operates lets take a look at an
+example. Let \textit{S} and \textit{E} in figure \ref{fig:grid} represent the
+start and end nodes respectively. To walk from \textit{S} to \textit{E} the
+shortest path will traverse
 
 \begin{figure}[htbp]
 	\centering
@@ -249,8 +261,8 @@ the cost of a diagonal step be 14 ($ \floor{10 \sqrt{2}} $).
 |.....E.| \\
 |.S.....| \\
 +-------+}
-	\caption{Example grid with the start node \textit{S} at coordinate (1, 1) and
-	the end node \textit{E} at coordinate (5, 0).}
+	\caption{\label{fig:grid} Example grid with the start node \textit{S} at
+	coordinate (1, 1) and the end node \textit{E} at coordinate (5, 0).}
 \end{figure}
 
 The cost using Manhattan distance between 's' and 'g' is $ 1*10 + 4*10 = 50 $,
