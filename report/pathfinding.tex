@@ -173,7 +173,7 @@ the end node. No path is found if all searchable nodes from the start node have 
 the end node still hasn't been found.
 
 To describe this in a more detailed step-by-step fashion, we start off by creating an empty
-open list (represented by a queue(insert ref to slides?) in our implementation).
+open list (represented by a queue \cite{lecture28} in our implementation).
 This open list will hold all nodes which we come across and that need to be checked out.
 Our next step is to push the start node into the open list and give it a cost value, which
 in our case will be 0. Once that is done, we simply follow these steps:
@@ -181,31 +181,43 @@ in our case will be 0. Once that is done, we simply follow these steps:
 As long as the open list is not empty:
 
 \begin{enumerate}
-\item Remove the head of the open list(or dequeue if queue). This is now our current node.
-\item Check if the current node is the same as the end node. If it is, then that means we're
-done.
-\item For every adjacent node to the current node, perform these steps:
-a) If the adjacent node is not present in the open list and does not have a value of its own
-i.e., it has not been checked, give it a cost value and append(enqueue) it to the open list.
-This cost value will be equal to the current node's value added with 10 if the adjacent node
-is located either horizontally or vertically from the current node, and 14 if diagonally.
-b) If the adjacent node is present in the open list, then give a tentative value to the
-cost value of the current node, added with the distance to the adjacent node (10 or 14 depending on its location).
-Compare this tentative value to the value of the adjacent node and then assign the smaller of the two values.
-\item Go back to step 1.
+	\item Remove the head of the open list (or dequeue for queues). This is now
+	our current node.
+	\item Check if the current node is the same as the end node. If it is, then
+	that means we're done.
+	\item For every adjacent node of the current node, perform these steps:
+	\begin{enumerate}
+		\item If the adjacent node is not present in the open list and does not
+		have a value of its own i.e., it has not been checked, give it a cost
+		value and append (enqueue) it to the open list. This cost value will be
+		equal to the current node's value plus the edge cost, which is 10 if the
+		adjacent node is located either horizontally or vertically of the current
+		node, and 14 if located diagonally.
+		\item If the adjacent node is present in the open list, then give a
+		tentative value to the cost value of the current node, added with the
+		distance to the adjacent node (10 or 14 depending on its location).
+		Compare this tentative value to the value of the adjacent node and then
+		assign the smaller of the two values.
+	\end{enumerate}
+	\item Go back to step 1.
 \end{enumerate}
 
 Once we've reached the end node, we start backtracking to find the path. To backtrack, we first
 pick the end node and check all of its adjacent nodes to find the one with the smallest cost value. Once we've
 located the node with the smallest cost, we save its location and repeat the last step. This is repeated until we've arrived
-back on the start node, at which point we've accumulated a list containing the nodes in a shortest path.
-
-While Dijkstra's algorithm will always find a shortest path, assuming one exists, its
-major drawback is performance. Which leads us to the greener pastures of...
-
+at the start node, at which point we've accumulated a list containing the nodes in a shortest path.
 
 % Useful to find the shortest path of multiple targets, or targets at unknown
 % coordinates.
+
+Once nice feature of the Dijkstra algorithm is that it can be used to locate
+paths for multiple targets at once, since it is moving in all directions. It is
+also good for locating targets at unknown locations, by simply traversing
+outwards from the start node \textit{S} until a unit resource or something else
+if interest is located.
+
+While Dijkstra's algorithm will always find a shortest path, assuming one exists, its
+major drawback is performance. Which leads us to the greener pastures of...
 
 % Time complexity.
 % skip?
@@ -270,9 +282,12 @@ horizontal steps and 14 as the edge cost of diagonal steps. The diagonal edge
 cost is derived from: $ \floor{10 \sqrt{1+1}} = 14 $.
 
 To get a feeling for how the diagonal heuristic operates lets take a look at an
-example. Let \textit{S} and \textit{E} in figure \ref{fig:grid} represent the
+example. Let \textit{S} and \textit{E} in figure \ref{fig:grid1} represent the
 start and end nodes respectively. To walk from \textit{S} to \textit{E} the
-shortest path will traverse
+shortest path will traverse one diagonal step and three horizontal steps. There
+are more than one shortest path with the same number of steps, but which of
+these is chosen is an implementation detail that may differ depending on the
+priority queue.
 
 \begin{figure}[htbp]
 	\centering
@@ -280,21 +295,33 @@ shortest path will traverse
 |.....E.| \\
 |.S.....| \\
 +-------+}
-	\caption{\label{fig:grid} Example grid with the start node \textit{S} at
-	coordinate (1, 1) and the end node \textit{E} at coordinate (5, 0).}
+	\caption{\label{fig:grid1} Example grid with the start node \textit{S} at
+	coordinate (1, 1) and the end node \textit{E} at coordinate (5, 0). Note that
+	the top left coordinate of the grid is located at coordinate (0, 0).}
 \end{figure}
 
-The cost using Manhattan distance between 's' and 'g' is $ 1*10 + 4*10 = 50 $,
-since there is one vertical and four horizontal steps from 's' to 'g'.
+One of the shortest paths is given in figure \ref{fig:grid2}. It performs the
+following steps:
+\begin{enumerate}
+	\item horizontal step to the east, arriving at the coordinate (2, 1).
+	\item diagonal step to the north east, arriving at the coordinate (3, 0).
+	\item horizontal step to the east, arriving at the coordinate (4, 0).
+	\item horizontal step to the east, arriving at the coordinate (5, 0).
+\end{enumerate}
 
-Using a hybrid heuristic we could combine a horizontal and a vertical step into
-a diagonal step which would cost 14 instead of 10+10=20. Using this method the
-heuristic could no longer be inadmissible.
+\begin{figure}[htbp]
+	\centering
+	\texttt{+-------+ \\
+|...xxE.| \\
+|.Sx....| \\
++-------+}
+	\caption{\label{fig:grid2} One of the shortest paths from \textit{S} to
+	\textit{E}.}
+\end{figure}
 
-The cost using a hybrid heuristic would in this case be $ 1*14 + 3*10 = 44 $,
-since there is one diagonal and three horizontal steps from 's' to 'g'.
-
-\textit{Inadmissible heuristics}
+While this heuristic will lead to the processing of more nodes in average it has
+a major benefit over the pure Manhattan distance heuristic; namely that it's no
+longer inadmissible and will therefore always arrive at the shortest path.
 
 % F, G, H costs.
 
@@ -341,7 +368,7 @@ than once.
 \subsubsection{Priority queues}
 \label{Priority queues}
 
-A priority queue is a queue of elements with a priority. The element with the highest priority is always the first element to be taken off the list. We use a value 'key'  for each element to represent the priority, the lower the key the higher the priority. Every element also has a unique identifier which we can use to find an element and update the priority.  There are numerous ways to implement priority queues and we have created two implementations.
+A priority queue is a queue of elements with a priority. The element with the highest priority is always the first element to be taken off the list. We use a value \textit{key} for each element to represent the priority, the lower the key the higher the priority. Every element also has a unique identifier which we can use to find an element and update the priority.  There are numerous ways to implement priority queues and we have created two implementations.
 
 \begin{enumerate}
 \item{List}\\
