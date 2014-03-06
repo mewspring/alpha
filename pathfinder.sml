@@ -5,6 +5,16 @@ use "queue.sml";
 
 structure Pathfinder =
 struct
+	(*
+		DATATYPE REPRESENTATION:
+			Colors are used to track the state of a node in a graph. White
+			corresponds to unprocessed nodes, Gray to nodes which are in the open
+			list and are not yet fully processed and Black to fully processed
+			nodes.
+		DATATYPE CONVENTION:
+			Nodes should have a color based on its state as mentioned in the
+			datatype representation.
+	*)
 	datatype Color = White | Gray | Black
 
 	(*
