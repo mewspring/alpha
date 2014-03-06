@@ -11,7 +11,7 @@ val goal = (2, 12);
 (* A* *)
 
 val graph = AStar.makeGraph grid;
-val shortestPath = AStar.find(graph, start, goal);
+val shortestPath = (AStar.find AStar.diagonal)(graph, start, goal);
 
 print("\n=== [ A* ] ===\n");
 Pretty.printPath (Grid.toArray2 grid, start, goal, valOf shortestPath);

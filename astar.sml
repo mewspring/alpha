@@ -34,59 +34,56 @@ struct
 		end;
 
 	(*
-		find (graph, spos, epos)
+		manhattan (epos as (ex, ey)) (pos as (x, y))
+		TYPE: (int * int) -> (int * int) -> int
+		PRE: pos and epos are valid coordinates of the graph.
+		POST: the estimated distance from pos to the end node at epos, using the
+		      Manhattan distance [1] as a heuristic measurement.
+		      [1]: http://mathworld.wolfram.com/TaxicabMetric.html
+	*)
+	fun manhattan (ex, ey) (x, y) = Int.abs(ex - x) + Int.abs(ey - y)
+
+	(*
+		diagonal (epos as (ex, ey)) (pos as (x, y))
+		TYPE: (int * int) -> (int * int) -> int
+		PRE: pos and epos are valid coordinates of the graph.
+		POST: the estimated distance from pos to the end node at epos, using a
+		      hybrid between Manhattan distance [1] and "as the crow flies" as a
+		      heuristic measurement.
+		      [1]: http://mathworld.wolfram.com/TaxicabMetric.html
+	*)
+	fun diagonal (ex, ey) (x, y) =
+		let
+			val dx = Int.abs(ex - x)
+			val dy = Int.abs(ey - y)
+			val d = Int.min(dx, dy)
+		in
+		(* To avoid having to calculate the sqrt(2) and working with reals
+		   we are using 10 as the edge cost of a vertical and horizontal
+		   steps and 14 as the edge cost of diagonal steps. The edge cost is
+		   derived from: floor(sqrt(1+1)*10) = 14.
+		*)
+			14*d + 10*(dx+dy-d)
+		end
+
+
+	(*
+		find h (graph, spos, epos)
 		TYPE: (color * int * int * (int * int)) Graph.graph * (int * int) * (int * int) -> (int * int) list option
 		PRE: spos and epos are valid coordinates of the graph.
 		POST: a path represented as a list of coordinates, which corresponds to
 		      the steps taken to reach the end node at epos from the start node at
-		      spos, or NONE if no such path exists.
+		      spos, or NONE if no such path exists. The heuristic function h is
+		      used to prioritize the processing of nodes.
 	*)
-	fun find (graph, spos as (sx, sy), epos as (ex, ey)) =
+	fun find h (graph, spos as (sx, sy), epos as (ex, ey)) =
 		let
 			val graph' = Graph.copy graph
 			val start = (Graph.at graph') spos
-
-			(*
-				manhattan (x, y)
-				TYPE: int * int -> int
-				PRE: (x, y) is a valid coordinate of the graph.
-				POST: the estimated distance from the provided (x, y) coordinate to
-				      the end node at epos, using the Manhattan distance [1] as a
-				      heuristic measurement.
-				      [1]: http://mathworld.wolfram.com/TaxicabMetric.html
-			*)
-			fun manhattan (x, y) = Int.abs(ex - x) + Int.abs(ey - y)
-
-			(*
-				diagonal (x, y)
-				TYPE: int * int -> int
-				PRE: (x, y) is a valid coordinate of the graph.
-				POST: the estimated distance from the provided (x, y) coordinate to
-				      the end node at epos, using a hybrid between Manhattan
-				      distance [1] and "as the crow flies" as a heuristic
-				      measurement.
-				      [1]: http://mathworld.wolfram.com/TaxicabMetric.html
-			*)
-			fun diagonal (x, y) =
-				let
-					val dx = Int.abs(ex - x)
-					val dy = Int.abs(ey - y)
-					val d = Int.min(dx, dy)
-				in
-				(* To avoid having to calculate the sqrt(2) and working with reals
-				   we are using 10 as the edge cost of a vertical and horizontal
-				   steps and 14 as the edge cost of diagonal steps. The edge cost is
-				   derived from: floor(sqrt(1+1)*10) = 14.
-				*)
-					14*d + 10*(dx+dy-d)
-				end
-
-			(* h is the heuristic function which calculates the H cost based on a
-			   given coordinate. *)
-			val h = diagonal
+			val h' = h epos
 
 			(* Insert the start node. *)
-			val openList = Pqueue.insert(Pqueue.empty, 0 + h spos, valOf start)
+			val openList = Pqueue.insert(Pqueue.empty, 0 + h' spos, valOf start)
 			(*
 				find' ol
 				TYPE: (color * int * int * (int * int)) Pqueue.queue -> (int * int) list option
@@ -160,7 +157,7 @@ struct
 								if aColor = White then
 									let
 										(* pos is the coordinate of the parent node. *)
-										val adata = (Gray, newG, h apos, pos)
+										val adata = (Gray, newG, h' apos, pos)
 										val newAnode = Graph.Node(apos, aAdjacent, adata)
 									in
 										(* A path to anode has been located. Update its

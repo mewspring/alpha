@@ -29,7 +29,7 @@ print("=== [ Example 1 - A* ] ===\n");
 val graph = AStar.makeGraph grid;
 
 val timer = Timer.startRealTimer();
-val astar_shortestPath = repeat( AStar.find, (graph, start, goal), runPathFind );
+val astar_shortestPath = repeat( (AStar.find AStar.diagonal), (graph, start, goal), runPathFind );
 val astar_shortestPath = valOf astar_shortestPath
 val astar_time = Timer.checkRealTimer(timer);
 
