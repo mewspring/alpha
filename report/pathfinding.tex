@@ -463,12 +463,30 @@ length. \cite{astar2}
 
 \section{User's Manual}
 
-% TODO: Use cases, examples...
+The usage of this program is best explained by using an example. This guide also assumes that
+the user has floor.txt, object.txt and walkable.txt/ref{tile-grid} in the same folder as the rest of
+the sml-files.
 
-% ref: demo.sml
+A good demonstration of this following process can be found in demo.sml.
 
-% Mention the files and what content they contain. Mention the most important
-% functions and their arguments.
+The first step the user needs to take is to call \textit{TileGrid.make} with object.txt. This is followed
+by using \textit{TileGrid.make} with floor.txt and then merging the two tilegrids with \textit{TileGrid.merge}.
+Once these steps have been taken one can move on to creating an actual grid(Grid.grid) by calling
+\textit{Grid.make} with the merged object/floor grid and walk.txt.
+
+This grid can be used to create a polymorphic graph object which is used for the actual pathfinding.
+The easiest way to create graphs that are compatibile with the two pathfinding algorithms is by using:
+\textit{Pathfinder.aStarGraph} for use with aStar and \textit{Pathfinder.dijkstraGraph} for dijkstra.
+
+Once either a aStarGraph or dijkstraGraph has been created the user will have all the tools to
+use the pathfinding-algorithms. To do this, all the user needs to do is to call \textit{Pathfinder.aStar}(or
+\textit{Pathfinder.dijkstra} for dijkstra) with the aStarGraph, a start coordinate(in the form of x,y and an end coordinate.
+If a path is found then \textit{SOME} list containing the coordinates from start to end is returned. Otherwise, if no path has
+been found then \textit{NONE} is returned.
+
+After a pathfinding list has been acquired, it is possible to print the map with the path marked. This can be performed by
+calling \textit{Pretty.printPath} with: \textit{Grid.Array2}(or \textit{Grid.Vector2} depending on which version)
+on the grid that was used to create the graph, the start position, the end location and also the list containing the path.
 
 % === [ Analysis and discussion ] ==============================================
 
