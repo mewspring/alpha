@@ -190,9 +190,9 @@ As long as the open list is not empty:
 		\item If the adjacent node is not present in the open list and does not
 		have a value of its own i.e., it has not been checked, give it a cost
 		value and append (enqueue) it to the open list. This cost value will be
-		equal to the current node's value added with 10 if the adjacent node is
-		located either horizontally or vertically from the current node, and 14 if
-		diagonally.
+		equal to the current node's value plus the edge cost, which is 10 if the
+		adjacent node is located either horizontally or vertically of the current
+		node, and 14 if located diagonally.
 		\item If the adjacent node is present in the open list, then give a
 		tentative value to the cost value of the current node, added with the
 		distance to the adjacent node (10 or 14 depending on its location).
@@ -205,7 +205,7 @@ As long as the open list is not empty:
 Once we've reached the end node, we start backtracking to find the path. To backtrack, we first
 pick the end node and check all of its adjacent nodes to find the one with the smallest cost value. Once we've
 located the node with the smallest cost, we save its location and repeat the last step. This is repeated until we've arrived
-back on the start node, at which point we've accumulated a list containing the nodes in a shortest path.
+at the start node, at which point we've accumulated a list containing the nodes in a shortest path.
 
 While Dijkstra's algorithm will always find a shortest path, assuming one exists, its
 major drawback is performance. Which leads us to the greener pastures of...
