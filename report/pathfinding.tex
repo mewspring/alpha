@@ -207,12 +207,17 @@ pick the end node and check all of its adjacent nodes to find the one with the s
 located the node with the smallest cost, we save its location and repeat the last step. This is repeated until we've arrived
 at the start node, at which point we've accumulated a list containing the nodes in a shortest path.
 
-While Dijkstra's algorithm will always find a shortest path, assuming one exists, its
-major drawback is performance. Which leads us to the greener pastures of...
-
-
 % Useful to find the shortest path of multiple targets, or targets at unknown
 % coordinates.
+
+Once nice feature of the Dijkstra algorithm is that it can be used to locate
+paths for multiple targets at once, since it is moving in all directions. It is
+also good for locating targets at unknown locations, by simply traversing
+outwards from the start node \textit{S} until a unit resource or something else
+if interest is located.
+
+While Dijkstra's algorithm will always find a shortest path, assuming one exists, its
+major drawback is performance. Which leads us to the greener pastures of...
 
 % Time complexity.
 % skip?
