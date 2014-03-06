@@ -13,7 +13,7 @@ val grid = Grid.make ( tilegrid, "demo/walk.txt");
 * Simple *)
 
 (* Benchmark *)
-val scale = 1; (* Number of times to scale the map *)
+val scale = 10; (* Number of times to scale the map *)
 val runPathFind = 1; (* Number of times to run the pathfinder *)
 val tilegrid = TileGrid.make( "demo/myTerrainData.txt" );
 val width = 80;
@@ -35,7 +35,7 @@ val processed = !AStar.processedNodes;
 val time = Timer.checkRealTimer(timer);
 
 print("=== Results ] ====");
-Pretty.printPath(Grid.toArray2 grid, start, goal, shortestPath);
+(*Pretty.printPath(Grid.toArray2 grid, start, goal, shortestPath);*)
 print ("Dijkstra took "^(Time.toString(time))^" seconds\n");
 print ("Dijkstra processed "^(Int.toString(processed))^" nodes\n");
 print ("Path length "^(Int.toString (List.length(shortestPath)))^"\n");
