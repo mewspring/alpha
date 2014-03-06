@@ -1,5 +1,5 @@
 use "graph.sml";
-use "pqueue_list.sml";
+use "pqueue.sml";
 
 structure AStar =
 struct
