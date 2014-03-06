@@ -179,7 +179,8 @@ Our next step is to push the start node into the open list and give it a cost va
 in our case will be 0. Once that is done, we simply follow these steps:
 
 As long as the open list is not empty:
-/begin{enumerate}
+
+\begin{enumerate}
 \item Remove the head of the open list(or dequeue if queue). This is now our current node.
 \item Check if the current node is the same as the end node. If it is, then that means we're
 done.
@@ -191,10 +192,9 @@ is located either horizontally or vertically from the current node, and 14 if di
 b) If the adjacent node is present in the open list, then give a tentative value to the
 cost value of the current node, added with the distance to the adjacent node (10 or 14 depending on its location).
 Compare this tentative value to the value of the adjacent node and then assign the smaller of the two values.
- \item Go back to step 1.
+\item Go back to step 1.
+\end{enumerate}
 
-
-/end{enumerate}
 Once we've reached the end node, we start backtracking to find the path. To backtrack, we first
 pick the end node and check all of its adjacent nodes to find the one with the smallest cost value. Once we've
 located the node with the smallest cost, we save its location and repeat the last step. This is repeated until we've arrived
