@@ -1,7 +1,7 @@
-use "grid.sml";
-use "pretty.sml";
-use "pathfinder.sml";
 use "tilegrid.sml";
+use "grid.sml";
+use "pathfinder.sml";
+use "pretty.sml";
 
 (* Preprocess of grid and graph. *)
 

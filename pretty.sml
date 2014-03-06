@@ -1,4 +1,3 @@
-use "grid.sml";
 use "helpers.sml";
 
 structure Pretty =

@@ -1,7 +1,7 @@
-use "grid.sml";
-use "pretty.sml";
-use "pathfinder.sml";
 use "tilegrid.sml";
+use "grid.sml";
+use "pathfinder.sml";
+use "pretty.sml";
 
 fun repeat( f, arg, 1 ) = f(arg)
 |	repeat( f, arg, n ) =
