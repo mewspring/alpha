@@ -155,8 +155,8 @@ struct
 							in
 								if aColor = White then
 									let
-										(* pos is the coordinate of the parent node. *)
 										val aH = h' apos
+										(* pos is the coordinate of the parent node. *)
 										val adata = (Gray, newG, aH, pos)
 										val aF = newG + aH
 										val newAnode = Graph.Node(apos, aAdjacent, adata)
@@ -170,6 +170,8 @@ struct
 									end
 								else if aColor = Gray andalso newG < aG then
 									let
+										(* TODO: Remove this line. It shouldn't be required to recalculate the H cost.  *)
+										val aH = h' apos
 										(* pos is the coordinate of the parent node. *)
 										val adata = (aColor, newG, aH, pos)
 										val aF = newG + aH
