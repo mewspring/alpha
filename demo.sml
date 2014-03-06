@@ -1,54 +1,36 @@
-use "grid.sml";
-use "pretty.sml";
-use "pathfinder.sml";
 use "tilegrid.sml";
+use "grid.sml";
+use "pathfinder.sml";
+use "pretty.sml";
 
-fun repeat( f, arg, 1 ) = f(arg)
-|	repeat( f, arg, n ) =
-		( f(arg) ; repeat(f,arg,n-1) )
+(* Preprocess of grid and graph. *)
 
-(* Simple *
-val tilegrid = TileGrid.merge( TileGrid.make( "demo/floor.txt"),TileGrid.make( "demo/objects.txt") );
-val grid = Grid.make ( tilegrid, "demo/walk.txt");
-* Simple *)
+val tilegrid = TileGrid.merge(TileGrid.make("demo/floor.txt"),TileGrid.make("demo/objects.txt"));
+val grid = Grid.make(tilegrid, "demo/walk.txt");
+val start = (2, 2);
+val goal = (2, 12);
 
-(* Benchmark *)
-val scale = 10; (* Number of times to scale the map *)
-val runPathFind = 1; (* Number of times to run the pathfinder *)
-val tilegrid = TileGrid.make( "demo/myTerrainData.txt" );
-val width = 80;
-val height = 60;
-val tilegrid = TileGrid.loopExtend( tilegrid, width*(scale-1), height*(scale-1) )
-val grid = Grid.make ( tilegrid, "demo/walk.txt");
-val start = (9,21);
-val goal = ( (width*scale)-22, (height*scale)-6 );
-(* Benchmark *)
+(* A* *)
 
-print("=== [ Example 1 - A* ] ===\n");
+val aStar_graph = Pathfinder.aStarGraph grid;
+val aStar_shortestPath = Pathfinder.aStar(aStar_graph, start, goal);
+val aStar_shortestPath = valOf aStar_shortestPath
+val astar_processed = !Pathfinder.processedNodes;
 
-val graph = Pathfinder.aStarGraph grid;
 
-val timer = Timer.startRealTimer();
-val astar_shortestPath = repeat( Pathfinder.aStar, (graph, start, goal), runPathFind );
-val astar_shortestPath = valOf astar_shortestPath
-val astar_time = Timer.checkRealTimer(timer);
+(* Dijkstra *)
 
-(*Pretty.printPath(Grid.toArray2 grid, start, goal, astar_shortestPath); *)
-
-print("=== [ Example 2 - Dijkstra ] ====");
-
-val graph = Pathfinder.dijkstraGraph grid;
-
-val timer = Timer.startRealTimer();
-val dijkstra_shortestPath = repeat( Pathfinder.dijkstra, (graph, start, goal), runPathFind );
+val dijkstra_graph = Pathfinder.dijkstraGraph grid;
+val dijkstra_shortestPath = Pathfinder.dijkstra(dijkstra_graph, start, goal);
 val dijkstra_shortestPath = valOf dijkstra_shortestPath
-val dijkstra_time = Timer.checkRealTimer(timer);
+val dijkstra_processed = !Pathfinder.processedNodes;
 
-(*Pretty.printPath(Grid.toArray2 grid, start, goal, dijkstra_shortestPath);*)
+print("\n=== [ A* ] ===\n");
+Pretty.printPath (Grid.toArray2 grid, start, goal, aStar_shortestPath);
+print ("Path length "^(Int.toString (List.length(aStar_shortestPath)))^"\n");
+print ("A* processed "^(Int.toString(astar_processed))^" nodes\n");
 
-print("=== Results ] ====");
-
-print ("A* took "^(Time.toString(astar_time))^" seconds\n");
-print ("Path length "^(Int.toString (List.length(astar_shortestPath)))^"\n");
-print ("Dijkstra took "^(Time.toString(dijkstra_time))^" seconds\n");
+print("\n=== [ Dijkstra ] ===\n");
+Pretty.printPath (Grid.toArray2 grid, start, goal, dijkstra_shortestPath);
 print ("Path length "^(Int.toString (List.length(dijkstra_shortestPath)))^"\n");
+print ("Dijkstra processed "^(Int.toString(dijkstra_processed))^" nodes\n");

@@ -21,7 +21,7 @@ More research on A* and the different options for priority queues. Found that bi
 26/2 11:00 - 16:00
 For binomial tree to work with a* we need a method to update the priority of an item in the queue and bubble it up the heap if it gets a lower priority than its parent. Wrote this method today.
 
-27/2 14:30 - 16:30
+27/2 12:00 - 16:30
 Restructuring of code
 
 18:00 - 23:45
@@ -39,3 +39,18 @@ Started writing function specifications for pqueue. Found that the update functi
 
 3/3 09:00 - 14:00
 Finished with function specifications and re-wrote update-function which should now be more optimized and stop searching once it finds the node to update. Remowed signature for pqueue because sml doesn't seem to have a way to bind a structure so I can't easily use the list implementation instead of the binoheap. Moved them into seperate files instead, we can now switch between list och binoheap for pqueue by including the desired file in pathfinder.sml
+
+15:00 - 17:30
+Meeting with team and Peter. Discussed what we have on the report so far, brainstormed what we wanted to have in the report and who should write what.
+
+19:00 - 01:00
+Changed grid to use vector instead of array2, got it working but there's something weird with order files are inbluded because I get an exception the second run. Reverting to previous version in the meantime. Added function to scale a map to create really really large datasets for testing. Now we're seeing some interesting performance differences
+
+4/3 15:00 - 23:00
+Writing report
+
+5/3 11:00 - 23:00
+Writing report and some test-cases
+
+6/3 09:30 - 18:00 
+Wrapping up report and project

@@ -113,8 +113,10 @@ structure Pqueue =
 			      containing an element with the minimum key of H,
 			      and H’ is H without T’
 			VARIANT: |H|
+			SIDE-EFFECTS: raises Empty if the queue is empty.
 		*)
-		fun extractMinTree [T] = (T, [])
+		fun extractMinTree [] = raise Empty
+		  | extractMinTree [T] = (T, [])
 		  | extractMinTree (T::H) =
 			let val (T', H') = extractMinTree H
 			in  if root T < root T' then (T, H) else (T', T::H') end

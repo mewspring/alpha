@@ -17,7 +17,7 @@ struct
 
 	(*
 		getNode grid ((x, y), data)
-		TYPE: Grid.grid -> int * int * 'a -> node option
+		TYPE: Grid.grid -> (int * int) * 'a -> 'a node option
 		PRE: true
 		POST: SOME node at the provided (x, y) coordinate with its associated
 		      adjacent nodes and node data, or NONE if the specified coordinate
@@ -33,7 +33,7 @@ struct
 	with
 		(*
 			make (grid, data)
-			TYPE: grid * 'a -> a' graph
+			TYPE: Grid.grid * 'a -> 'a graph
 			PRE: true
 			POST: the graph representation of the provided grid, where each cell of
 			      the grid corresponds to a node in the graph; and where all nodes of
@@ -52,21 +52,21 @@ struct
 
 		(*
 			at graph (x, y)
-			TYPE: graph -> int * int -> node
+			TYPE: 'a graph -> int * int -> 'a node option
 			PRE: (x, y) is a valid coordinate of the graph.
 			POST: the graph node located at the coordinate (x, y).
 		*)
 		fun at (Graph graph) (x, y) = Array2.sub(graph, y, x);
 
 		(*
-			update graph ((x, y), data)
-			TYPE: graph -> (int * int) * 'a -> unit
+			update graph ((x, y), node)
+			TYPE: 'a graph -> (int * int) * 'a node option -> unit
 			PRE: (x, y) is a valid coordinate of the graph.
 			POST: none.
-			SIDE-EFFECTS: updates the data of the graph node at the provided (x, y)
+			SIDE-EFFECTS: updates the node of the graph at the provided (x, y)
 			              coordinate.
 		*)
-		fun update (Graph graph) ((x, y), data) = Array2.update(graph, y, x, data);
+		fun update (Graph graph) ((x, y), node) = Array2.update(graph, y, x, node);
 
 		(*
 			copy graph

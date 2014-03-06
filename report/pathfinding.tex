@@ -106,7 +106,11 @@ A second function \textit{merge} is used to merge two layers of map-data. It tak
 
 \subsubsection{Grid}
 
+<<<<<<< HEAD
 A similar datastructure is what we call a \textit{grid}. It's a 2d grid of boolean values where each tile is simply true if walkable or false for non-walkable. We include a function for generating a grid out of a tilegrid together with a file which contains the values of tiles that should be considered as walkable. This way a user of our program can have multiple files which specify a different set of units that can traverse a different set of tiles of the same map and generate a different grid for each one. In the interface we also have functions for checking if a tile is walkable, getting walkable adjacent tiles of a tile as well as getting the dimensions of a grid. We chose Array2 as the underlying datastructure of the grid because we needed element access in constant time, we could have chosen a Vector but Array2 provides a convenient way of accessing elements using 2d coordinates.
+=======
+A similar datastructure is what we call a \textit{grid}. It's a 2d grid of boolean values where each tile is true if walkable or false for non-walkable. We include a function for generating a grid out of a tilegrid together with a file which contains the values of tiles that should be considered as walkable. This way a user of our program can have multiple files which specify a different set of units that can traverse a different set of tiles of the same map and generate a different grid for each one. In the interface we also have functions for checking if a tile is walkable, getting walkable adjacent tiles of a tile as well as getting the dimensions of a grid. We chose Array2 as the underlying datastructure of the grid because we needed element access in constant time, we could have chosen a Vector but Array2 provides a convenient way of accessing elements using 2d coordinates. 
+>>>>>>> cdd0512e989d90a568c5e6b86543a93722d6f2b9
 
 \subsubsection{Graph}
 Our abstract datatype \textit{graph} is what holds the graph of nodes. A node is a walkable tile with edges that connects it to adjacent walkable nodes, it also has a component to hold arbitrary data needed by the pathfinder algorithms. We provide functions to create a graph from a grid, update and get functions for a node provided its coordinates and a copy function to make a new copy of the whole graph. We could have skipped this datatype and have our pathfinders work directly with a grid but we dicided to do this preprocessing and create a node graph so that we could re-use it and do multiple pathfindings without having to calculate adjacent nodes each time. In agreement with our supervisor, we chose Array2 as the underlaying datastructure for the graph because we needed to efficiently update and get data from an element and Array2 does this in constant time with 2d coordinates as input.
@@ -329,13 +333,13 @@ than once.
 \subsubsection{Priority queues}
 \label{Priority queues}
 
-A priority queue is a queue of elements with a priority. The element with the highest priority is always the first element to be taken off the list. We use a value 'key'  for each element to represent the priority, the lower key the higher the priority. Every element also has a unique identifier which we can use to find an element and update the priority.  There are numerous ways to implement priority queues and we have created two implementations.
+A priority queue is a queue of elements with a priority. The element with the highest priority is always the first element to be taken off the list. We use a value 'key'  for each element to represent the priority, the lower the key the higher the priority. Every element also has a unique identifier which we can use to find an element and update the priority.  There are numerous ways to implement priority queues and we have created two implementations.
 
 \begin{enumerate}
-\item{List}
+\item{List}\\
 A one dimensional list where the elements are ordered by rising key value. Popping the element with the highest priority from the queue is just a matter of taking the first element in the list which is a constant time operation. Elements are inserted at the right position by comparing the key of the element to insert with every consecutive element from the beginning of the list until a element with a higher key value is found. Updating the priority of a element is a matter of looking through the list, element by element, until we find one with a specific identifier, removing that from the list and inserting it again with the new priority. Inserting and updating (remove and insert) are both operations that take linear time because we potentially have to look at every element in the list.
 
-\item{Binomial Heap}
+\item{Binomial Heap}\\
 A binomial min-heap is a list of binomial trees that satisfy the min-heap property such that the key of each non-root is a least the key of its parent. The number of trees in a binomial heap is at most lg|h|+1 ( h is total number of nodes in all trees). Because finding the node with the lowest key is a matter of looking at the root of each tree, it becomes a O(lg|h|) operation. Inserting a new node also takes O(lg|h|) at worst. Updating a node to have a higher priority is a matter of finding the node and changing its key, then move it up the tree by swapping place with its parents until the key is higher than the parent or it becomes the root. Fully explaining a binomial heap however is not within the scope of this report but more details are available in lecture 28 \cite{lecture28} where our implementation (except update function) also is borrowed from.
 
 \end{enumerate}

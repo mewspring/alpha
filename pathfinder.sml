@@ -1,10 +1,22 @@
 use "graph.sml";
 use "pqueue.sml";
-(*use "pqueue_list.sml";*)
 use "queue.sml";
 
 structure Pathfinder =
 struct
+	val processedNodes = ref 0;
+	fun resetProcessedNodes() = processedNodes := 0
+	fun incrementProcessedNodes() = processedNodes := !processedNodes + 1
+	(*
+		DATATYPE REPRESENTATION:
+			Colors are used to track the state of a node in a graph. White
+			corresponds to unprocessed nodes, Gray to nodes which are in the open
+			list and are not yet fully processed and Black to fully processed
+			nodes.
+		DATATYPE CONVENTION:
+			Nodes should have a color based on its state as mentioned in the
+			datatype representation.
+	*)
 	datatype Color = White | Gray | Black
 
 	(*
@@ -16,6 +28,7 @@ struct
 	*)
 	fun aStar ( graph', start : (int * int), goal)  =
 		let
+			val _ = resetProcessedNodes();
 			val graph = Graph.copy(graph');
 			val openList = Pqueue.insert( Pqueue.empty, 0,start );
 
@@ -30,6 +43,7 @@ struct
 			|	pathfind' ( openList ) =
 				let
 					val ((currentF, currentNode), openList ) = Pqueue.extractMin( openList );
+					val _ = incrementProcessedNodes();
 
 					(*
 						calculateG (pos, adjPos)
@@ -46,9 +60,9 @@ struct
 						POST: the h value(see documentation) of pos.
 					*)
 					(* Manhattan distance heuristics *)
-					fun calculateH((x,y), (ex, ey)) = 10*(Int.abs(x - ex) + Int.abs(y - ey))
+					(*fun calculateH((x,y), (ex, ey)) = 10*(Int.abs(x - ex) + Int.abs(y - ey))*)
 					(* Diagonal heuristics *)
-					(*fun calculateH((x,y), (ex, ey)) =
+					fun calculateH((x,y), (ex, ey)) =
 						let
 							val xDist = Int.abs(x - ex)
 							val yDist = Int.abs(y - ey)
@@ -57,7 +71,7 @@ struct
 								14*yDist + 10*(xDist-yDist)
 							else
 								14*xDist + 10*(yDist-xDist)
-						end*)
+						end
 
 					(*
 						getF pos
@@ -148,6 +162,7 @@ struct
 	*)
 	fun dijkstra ( graph', start : (int * int), goal) =
 	let
+		val _ = resetProcessedNodes();
 		val graph = Graph.copy(graph');
 		val openList = Queue.enqueue (Queue.empty, start)
 		val _ = case (Graph.at graph) start of (SOME (Graph.Node(_, adjList, _))) => (Graph.update graph) (start, SOME (Graph.Node((start, adjList, SOME 0))))
@@ -163,6 +178,7 @@ struct
 			if Queue.isEmpty openList then NONE else
 			let
 				val (currentNode as (currentX, currentY), openList) = (Queue.head(openList), Queue.dequeue(openList))
+				val _ = incrementProcessedNodes();
 				val value = case (Graph.at graph) currentNode of (SOME (Graph.Node(_, _, SOME value))) => value
 
 				(*

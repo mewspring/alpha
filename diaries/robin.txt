@@ -57,3 +57,11 @@
 	15:00 - 21:00
 		Skriv på rapport hemma hos Nils. Framförallt sektionerna heuristics.
 		Simple demo.
+
+2014-03-06
+	01:30 - 08:00
+		Implementera A* igen for fun and profit ^^
+
+2014-03-06
+	12:15 - 18:00
+		Slutspurt hemma hos Nils. Fixa kod, diskutera rapport, skriva rapport m.m.
