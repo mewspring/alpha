@@ -282,7 +282,7 @@ horizontal steps and 14 as the edge cost of diagonal steps. The diagonal edge
 cost is derived from: $ \floor{10 \sqrt{1+1}} = 14 $.
 
 To get a feeling for how the diagonal heuristic operates lets take a look at an
-example. Let \textit{S} and \textit{E} in figure \ref{fig:grid} represent the
+example. Let \textit{S} and \textit{E} in figure \ref{fig:grid1} represent the
 start and end nodes respectively. To walk from \textit{S} to \textit{E} the
 shortest path will traverse one diagonal step and three horizontal steps. There
 are more than one shortest path with the same number of steps, but which of
@@ -295,8 +295,28 @@ priority queue.
 |.....E.| \\
 |.S.....| \\
 +-------+}
-	\caption{\label{fig:grid} Example grid with the start node \textit{S} at
-	coordinate (1, 1) and the end node \textit{E} at coordinate (5, 0).}
+	\caption{\label{fig:grid1} Example grid with the start node \textit{S} at
+	coordinate (1, 1) and the end node \textit{E} at coordinate (5, 0). Note that
+	the top left coordinate of the grid is located at coordinate (0, 0).}
+\end{figure}
+
+One of the shortest paths is given in figure \ref{fig:grid2}. It performs the
+following steps:
+\begin{enumerate}
+	\item horizontal step to the east, arriving at the coordinate (2, 1).
+	\item diagonal step to the north east, arriving at the coordinate (3, 0).
+	\item horizontal step to the east, arriving at the coordinate (4, 0).
+	\item horizontal step to the east, arriving at the coordinate (5, 0).
+\end{enumerate}
+
+\begin{figure}[htbp]
+	\centering
+	\texttt{+-------+ \\
+|...xxE.| \\
+|.Sx....| \\
++-------+}
+	\caption{\label{fig:grid2} One of the shortest paths from \textit{S} to
+	\textit{E}.}
 \end{figure}
 
 While this heuristic will lead to the processing of more nodes in average it has
